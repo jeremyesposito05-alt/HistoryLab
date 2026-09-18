@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7-generic-shell-1';
+const CACHE = 'historylab-v7.1-blue-shell-1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));

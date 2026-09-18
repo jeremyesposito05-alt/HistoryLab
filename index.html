@@ -799,6 +799,110 @@ body.welcome-active>header,body.welcome-active>.wrap,body.welcome-active>.app-si
 }
 @media(max-width:340px){.dashboard-top{padding-right:120px}.dashboard-coach{width:130px}.flash-grid{grid-template-columns:1fr}.flash-card{min-height:145px}.paper-hub-grid{grid-template-columns:1fr}.paper-hub-card:last-child{grid-column:auto}}
 
+
+
+/* ==================== V7.1 · BLUE APP SHELL + COURSE FILTER FIX ==================== */
+/* Keep the official Beau Soleil logo untouched. On the blue welcome screen it sits on a white plaque. */
+.welcome-logo{
+  filter:none!important;
+  background:#fff;
+  border-radius:14px;
+  padding:7px 9px;
+  box-shadow:0 8px 24px rgba(0,0,0,.14);
+}
+
+/* The app uses Beau Soleil blue as a shell, while reading surfaces stay white. */
+body:not(.welcome-active){
+  background:linear-gradient(180deg,var(--bs-navy) 0 92px,var(--bs-mid) 92px 178px,#e7f0f7 178px 100%);
+}
+body:not(.welcome-active) header{
+  background:linear-gradient(135deg,var(--bs-navy),var(--bs-mid));
+  border-bottom:0;
+  box-shadow:none;
+}
+body:not(.welcome-active) .topbar{color:#fff}
+body:not(.welcome-active) .brand{
+  background:#fff;
+  border-radius:15px;
+  padding:5px 9px;
+  box-shadow:0 5px 18px rgba(0,0,0,.12);
+}
+body:not(.welcome-active) .brand-divider{background:#d8e0e8}
+body:not(.welcome-active) .brandtxt b{color:var(--bs-navy)}
+body:not(.welcome-active) .brandtxt>span{color:#657487}
+body:not(.welcome-active) .course-mini-context{color:rgba(255,255,255,.84)}
+body:not(.welcome-active) .wrap{
+  background:#f8fafc;
+  border-radius:30px 30px 0 0;
+  box-shadow:0 -4px 28px rgba(0,38,84,.16);
+  min-height:calc(100dvh - 78px);
+  margin-top:10px;
+}
+body:not(.welcome-active) .dashboard-top{
+  border-color:#d5e4ef;
+  box-shadow:0 10px 28px rgba(0,38,84,.08);
+}
+body:not(.welcome-active) .dashboard-priority{
+  border-color:#d8e5ee;
+  border-left:4px solid var(--bs-bright);
+}
+body:not(.welcome-active) .course-card-v7{
+  position:relative;
+  overflow:hidden;
+  border-color:#d8e5ee;
+  box-shadow:0 8px 26px rgba(0,38,84,.07);
+}
+body:not(.welcome-active) .course-card-v7:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:5px;
+  background:linear-gradient(90deg,var(--bs-mid),var(--bs-bright),var(--bs-gold));
+}
+.course-open-v71{
+  appearance:none;
+  width:100%;
+  border:0;
+  background:transparent;
+  padding:2px 0 0;
+  text-align:left;
+  cursor:pointer;
+}
+.course-open-v71:hover h3{color:var(--bs-mid)}
+.course-pct{display:flex;flex-direction:column;align-items:flex-end;line-height:1.05}
+.course-pct b{font-size:1.15rem;color:var(--bs-mid)}
+.course-pct small{margin-top:4px;font-size:.61rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);font-weight:850}
+
+/* Desktop navigation sits lightly on the blue header; mobile navigation remains a white floating dock. */
+@media(min-width:761px){
+  body:not(.welcome-active) nav{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+  body:not(.welcome-active) nav button{color:rgba(255,255,255,.82)}
+  body:not(.welcome-active) nav button[aria-selected="true"]{background:#fff;color:var(--bs-navy)}
+}
+@media(max-width:760px){
+  body:not(.welcome-active){background:linear-gradient(180deg,var(--bs-navy) 0 76px,var(--bs-mid) 76px 150px,#dceaf4 150px 100%)}
+  body:not(.welcome-active) .topbar{padding-bottom:8px}
+  body:not(.welcome-active) .brand{padding:4px 7px;border-radius:13px}
+  body:not(.welcome-active) .bs-logo{width:82px}
+  body:not(.welcome-active) .wrap{
+    width:calc(100% - 14px);
+    margin:7px auto 0;
+    padding-left:12px;
+    padding-right:12px;
+    border-radius:24px 24px 0 0;
+    min-height:calc(100dvh - 65px);
+  }
+  body:not(.welcome-active) nav{
+    background:#fff!important;
+    border:1px solid #d6e0e8!important;
+  }
+  body:not(.welcome-active) nav button{color:#647283}
+  body:not(.welcome-active) nav button[aria-selected="true"]{background:var(--bs-navy);color:#fff}
+}
+@media(max-width:390px){
+  .welcome-logo{padding:6px 8px;border-radius:12px}
+  body:not(.welcome-active) .wrap{width:calc(100% - 10px);margin-top:5px;padding-left:10px;padding-right:10px;border-radius:21px 21px 0 0}
+}
+
 </style>
 </head>
 <body class="welcome-active">
@@ -1171,16 +1275,16 @@ function drawCourseContext(){
 }
 function drawHome(){
   const target=currentTarget(),its=DATA.items.filter(x=>caseMatch(x,target)),total=its.length,mastered=its.filter(x=>isMastered(store.l[x.i])).length,due=countDue(target),seen=its.filter(x=>(store.l[x.i]||{}).seen>0).length,st=streak();
-  const allMastered=DATA.items.filter(x=>isMastered(store.l[x.i])).length,coursePct=Math.round(allMastered/DATA.items.length*100);
+  const coursePct=total?Math.round(mastered/total*100):0;
   const pr=priorityAxis(target),scene=!seen?'welcome':due?'motivation':st>=3?'progress':'welcome',coach=$('#dashboard-coach');if(coach){coach.src=coachAsset(scene);coach.className='dashboard-coach coach-anim-'+coachAnim(scene)}
   $('#dash-title').textContent=store.lang==='en'?'Your progress':'Où en es-tu ?';
   $('#dash-message').textContent=due?(store.lang==='en'?due+' questions are ready for today.':due+' '+(due>1?'questions sont prêtes':'question est prête')+' pour aujourd’hui.'):(seen?(store.lang==='en'?'Nothing is due right now. Keep the rhythm going.':'Rien n’est dû pour le moment. Garde le rythme avec une courte séance.'):(store.lang==='en'?'Start a first session to build your learning profile.':'Commence une première séance pour construire ton profil de révision.'));
   $('#dash-inline-stats').innerHTML='<span class="dash-pill"><b>'+mastered+'/'+total+'</b> '+(store.lang==='en'?'mastered':'maîtrisées')+'</span><span class="dash-pill"><b>'+due+'</b> '+(store.lang==='en'?'due':'à revoir')+'</span><span class="dash-pill"><b>'+st+'</b> '+(store.lang==='en'?'day streak':'jours de série')+'</span>';
   if(pr){$('#dashboard-priority').innerHTML='<div class="priority-ico">★</div><div class="priority-main"><small>'+(store.lang==='en'?'Priority':'Priorité')+' · '+targetLabel()+'</small><b>'+esc(AXES[pr.a])+'</b><span>'+pr.mastered+'/'+pr.its.length+' '+(store.lang==='en'?'mastered':'maîtrisées')+(pr.wrong?' · '+pr.wrong+' '+(store.lang==='en'?'errors':'erreurs'):'')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Work on it':'Travailler')+'</button>';$('#dash-priority-go').onclick=()=>startPreset(pr.wrong?'errors':'quick',pr.a)}
   else{$('#dashboard-priority').innerHTML='<div class="priority-ico">→</div><div class="priority-main"><small>'+(store.lang==='en'?'First goal':'Premier objectif')+'</small><b>'+(store.lang==='en'?'Build your learning profile':'Construire ton profil')+'</b><span>'+(store.lang==='en'?'A few questions are enough to identify priorities.':'Quelques questions suffisent pour identifier les priorités.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Start':'Commencer')+'</button>';$('#dash-priority-go').onclick=()=>{activateView('flash')}}
-  const u1=DATA.items.filter(x=>x.u==='U1'),u2=DATA.items.filter(x=>x.u==='U2'),p1=Math.round(u1.filter(x=>isMastered(store.l[x.i])).length/u1.length*100),p2=Math.round(u2.filter(x=>isMastered(store.l[x.i])).length/u2.length*100);
-  $('#course-list').innerHTML='<div class="course-card-v7"><div class="course-card-head"><div class="course-badge">2</div><div><h3>'+(store.lang==='en'?'Authoritarian regimes':'Régimes autoritaires')+'</h3><p>Hitler & Mao · Paper 2 · '+(store.lang==='en'?'2 units':'2 unités')+'</p></div><div class="course-pct">'+coursePct+'%</div></div><div class="course-progress"><i style="width:'+coursePct+'%"></i></div><div class="course-case-row"><span>'+(store.lang==='en'?'Study':'Je travaille')+'</span>'+caseSwitchHtml('home')+'</div><div class="course-card-actions"><button class="btn sec sm" id="course-fiches">'+(store.lang==='en'?'Study sheets':'Fiches')+'</button><button class="btn sm" id="course-flash">Flash!</button></div><div class="dash-inline-stats" style="margin-top:11px"><span class="dash-pill"><b>'+p1+'%</b> '+(store.lang==='en'?'Emergence':'Émergence')+'</span><span class="dash-pill"><b>'+p2+'%</b> '+(store.lang==='en'?'Maintenance':'Maintien')+'</span></div></div>';
-  $('#course-count-label').textContent=store.lang==='en'?'1 active course':'1 cours actif';wireCaseSwitches();$('#course-fiches').onclick=()=>activateView('fic');$('#course-flash').onclick=()=>activateView('flash');
+  const u1=DATA.items.filter(x=>x.u==='U1'&&caseMatch(x,target)),u2=DATA.items.filter(x=>x.u==='U2'&&caseMatch(x,target)),p1=u1.length?Math.round(u1.filter(x=>isMastered(store.l[x.i])).length/u1.length*100):0,p2=u2.length?Math.round(u2.filter(x=>isMastered(store.l[x.i])).length/u2.length*100):0;
+  $('#course-list').innerHTML='<div class="course-card-v7"><button type="button" class="course-card-head course-open-v71" id="course-open" aria-label="Ouvrir le cours"><div class="course-badge">2</div><div><h3>'+(store.lang==='en'?'Authoritarian regimes':'Régimes autoritaires')+'</h3><p>Hitler & Mao · Paper 2 · '+(store.lang==='en'?'2 units':'2 unités')+'</p></div><div class="course-pct"><b>'+coursePct+'%</b><small>'+targetLabel()+'</small></div></button><div class="course-progress"><i style="width:'+coursePct+'%"></i></div><div class="course-case-row"><span>'+(store.lang==='en'?'Study':'Je travaille')+'</span>'+caseSwitchHtml('home')+'</div><div class="course-card-actions"><button class="btn sec sm" id="course-fiches">'+(store.lang==='en'?'Study sheets':'Fiches')+'</button><button class="btn sm" id="course-flash">Flash!</button></div><div class="dash-inline-stats" style="margin-top:11px"><span class="dash-pill"><b>'+p1+'%</b> '+(store.lang==='en'?'Emergence':'Émergence')+'</span><span class="dash-pill"><b>'+p2+'%</b> '+(store.lang==='en'?'Maintenance':'Maintien')+'</span></div></div>';
+  $('#course-count-label').textContent=store.lang==='en'?'1 course available':'1 cours disponible';wireCaseSwitches();if($('#course-open'))$('#course-open').onclick=()=>activateView('fic');$('#course-fiches').onclick=()=>activateView('fic');$('#course-flash').onclick=()=>activateView('flash');
 }
 
 

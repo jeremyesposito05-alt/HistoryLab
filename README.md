@@ -1,4 +1,4 @@
-# HistoryLab · V7
+# HistoryLab V7.1 · Blue Shell
 
 Version GitHub Pages / smartphone de HistoryLab, avec architecture générique multi-cours.
 
@@ -26,3 +26,10 @@ Le moteur d’interface dispose désormais d’une structure FR / EN. Le pack p�
 5. Enregistrer et ouvrir l’URL GitHub Pages.
 
 Si une ancienne version de HistoryLab était déjà installée sur smartphone, le nouveau `sw.js` change la clé de cache afin de forcer la mise à jour vers V7.
+
+## V7.1
+- correction du sélecteur Les deux / Hitler / Mao : progression et unités recalculées selon la cible ;
+- carte du cours cliquable et cible visible sous le pourcentage ;
+- correction du logo Beau Soleil sur l'écran d'entrée ;
+- nouvelle coque bleue Beau Soleil autour des surfaces blanches sur mobile et desktop ;
+- cache PWA incrémenté pour forcer la mise à jour GitHub Pages.
