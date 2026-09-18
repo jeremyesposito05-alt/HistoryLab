@@ -656,6 +656,89 @@ button,.btn,.pill,summary,input,textarea{touch-action:manipulation}
   .feedback-coach img{max-height:195px}
   .tbar{top:6px}
 }
+
+/* ==================== V6.5 · Mobile Teen UX ==================== */
+.navico svg,.home-action .ico svg,.rev-card .r-ico svg{width:1em;height:1em;display:block}
+.home-action .ico,.rev-card .r-ico{transition:transform .18s ease,background .18s ease,color .18s ease}
+.home-action:active,.rev-card:active,.uc:active,.pill:active{transform:scale(.985)}
+.home-action:nth-child(1) .ico{background:#E8F5FB;color:var(--bs-bright)}
+.home-action:nth-child(2) .ico{background:#FFF5D7;color:#9A6700}
+.home-action:nth-child(3) .ico{background:#EDF0FA;color:var(--bs-mid)}
+.rev-card:nth-child(1) .r-ico{background:#E8F5FB;color:var(--bs-bright)}
+.rev-card:nth-child(2) .r-ico{background:#FFF5D7;color:#9A6700}
+.rev-card:nth-child(3) .r-ico{background:#FFF0E8;color:var(--bs-orange)}
+.rev-card:nth-child(4) .r-ico{background:#EDF0FA;color:var(--bs-mid)}
+
+@media(max-width:760px){
+  /* Bottom navigation reads like a native app tab bar. */
+  nav{padding:7px 6px!important;border-radius:22px!important}
+  nav button{min-height:55px!important;border-radius:16px!important;gap:4px!important;font-size:.68rem!important;transition:background .15s ease,color .15s ease,transform .12s ease}
+  nav button:active{transform:scale(.96)}
+  nav button[aria-selected="true"]{background:#E9F2FA!important;color:var(--bs-mid)!important}
+  .navico{font-size:1.42rem!important;display:grid;place-items:center;line-height:1}
+  .navico svg{width:23px;height:23px}
+
+  /* Main section choices become app launchers, not website cards. */
+  .home-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+  .home-action{min-height:126px!important;padding:14px 8px!important;text-align:center!important;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:20px!important}
+  .home-action .ico{width:56px!important;height:56px!important;border-radius:18px!important;margin:0 auto 10px!important;font-size:1.7rem!important;display:grid;place-items:center}
+  .home-action .ico svg{width:30px;height:30px}
+  .home-action b{font-size:.9rem!important;line-height:1.15}
+  .home-action small{display:none!important}
+
+  /* Revision shortcuts stay visible together. */
+  .rev-intro{margin-bottom:12px!important}.rev-intro h1{margin-bottom:3px}.rev-intro p{font-size:.88rem;line-height:1.4}
+  .rev-quick{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:14px 0 16px!important}
+  .rev-card{min-height:154px!important;padding:15px 13px!important;border-radius:20px!important;display:flex;flex-direction:column;align-items:flex-start}
+  .rev-card .r-ico{width:56px!important;height:56px!important;border-radius:18px!important;margin:0 0 13px!important;font-size:1.6rem!important;display:grid;place-items:center}
+  .rev-card .r-ico svg{width:29px;height:29px}
+  .rev-card b{font-size:.98rem!important;line-height:1.2;padding-right:4px}
+  .rev-card span:not(.r-ico){font-size:.75rem!important;line-height:1.3!important;margin-top:5px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .rev-card em{top:12px!important;right:11px!important;font-size:.65rem!important;padding:4px 7px!important}
+  .custom-panel{border-radius:20px!important;padding:0 15px 16px!important}
+  .custom-panel>summary{min-height:58px;display:flex;align-items:center;font-size:.98rem!important}
+  .custom-panel>summary:after{margin-left:auto;font-size:1.3rem}
+  .ask{font-size:.78rem!important;text-transform:uppercase;letter-spacing:.055em;color:var(--ink3);margin:19px 0 9px!important}
+  #c-unite,#c-mode{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #c-unite .uc.wide,#c-mode .uc.wide{grid-column:1/-1}
+  #c-unite .uc,#c-mode .uc{padding:14px!important;border-radius:17px!important;min-height:112px}
+  #c-unite .uc .t,#c-mode .uc .t{font-size:.93rem!important;line-height:1.24}
+  #c-unite .uc .s,#c-mode .uc .s{font-size:.74rem!important;line-height:1.35}
+  #p-fic,#p-prog,#p-pays,#p-serie,#p-nb{flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:5px;mask-image:linear-gradient(90deg,#000 0 94%,transparent)}
+  #p-fic::-webkit-scrollbar,#p-prog::-webkit-scrollbar,#p-pays::-webkit-scrollbar,#p-serie::-webkit-scrollbar,#p-nb::-webkit-scrollbar{display:none}
+  #p-fic .pill,#p-prog .pill,#p-pays .pill,#p-serie .pill,#p-nb .pill{flex:0 0 auto;white-space:nowrap}
+
+  /* Quiz: preserve readability but use the screen width more efficiently. */
+  #quiz .qcard{padding:14px 11px!important;border-radius:18px!important}
+  #quiz .qctx{margin-bottom:11px!important;font-size:.69rem!important;padding:5px 8px!important}
+  #quiz .qtext{font-size:1.23rem!important;line-height:1.34!important;margin-bottom:14px!important;letter-spacing:-.018em}
+  #quiz .opts{gap:8px!important}
+  #quiz .opt{font-size:1rem!important;line-height:1.32!important;padding:10px 11px!important;min-height:56px!important;border-radius:14px!important;gap:10px!important;font-weight:650!important}
+  #quiz .opt .k{width:30px!important;height:30px!important;min-width:30px!important;flex:0 0 30px!important;font-size:.82rem!important}
+  #quiz #khint{display:none!important}
+  #quiz .qcard>.go{display:grid;grid-template-columns:1fr 1fr;gap:9px!important;align-items:stretch!important;margin-top:14px!important}
+  #quiz .qcard>.go .btn{width:100%;margin:0!important}
+
+  /* Fiches/progress: give the first tap targets more visual presence. */
+  #v-fic>h1,#v-pro>h1,#v-epr #eprsetup>h1{margin-bottom:8px}
+  .study-card{border-radius:20px!important}
+  .study-card h2{line-height:1.22}
+  .axis-progress{min-height:108px;display:flex;flex-direction:column;justify-content:center}
+}
+
+@media(max-width:380px){
+  .home-grid{gap:7px!important}
+  .home-action{min-height:116px!important;padding:12px 5px!important}
+  .home-action .ico{width:50px!important;height:50px!important;border-radius:16px!important}
+  .home-action .ico svg{width:27px;height:27px}
+  .home-action b{font-size:.8rem!important}
+  .rev-card{min-height:148px!important;padding:13px 11px!important}
+  .rev-card .r-ico{width:50px!important;height:50px!important}
+  #quiz .qcard{padding:12px 9px!important}
+  #quiz .qtext{font-size:1.18rem!important}
+  #quiz .opt{font-size:.96rem!important;padding:9px 10px!important;min-height:54px!important}
+}
+
 </style>
 </head>
 <body>
@@ -668,11 +751,11 @@ button,.btn,.pill,summary,input,textarea{touch-action:manipulation}
       <div class="brandtxt"><b><span>History</span><span class="lab">Lab</span></b><span>Hitler & Mao · Paper 2</span></div>
     </div>
     <nav id="nav" role="tablist" aria-label="Navigation principale">
-      <button role="tab" data-v="home" aria-selected="true"><span class="navico" aria-hidden="true">⌂</span><span>Accueil</span></button>
-      <button role="tab" data-v="rev" aria-selected="false"><span class="navico" aria-hidden="true">◎</span><span>Réviser</span></button>
-      <button role="tab" data-v="epr" aria-selected="false"><span class="navico" aria-hidden="true">▤</span><span>Épreuve</span></button>
-      <button role="tab" data-v="fic" aria-selected="false"><span class="navico" aria-hidden="true">▣</span><span>Fiches</span></button>
-      <button role="tab" data-v="pro" aria-selected="false"><span class="navico" aria-hidden="true">◉</span><span>Progrès</span></button>
+      <button role="tab" data-v="home" aria-selected="true"><span class="navico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 11.2 12 4l8.5 7.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.8 10.3V20h12.4v-9.7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.4 20v-5.8h5.2V20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Accueil</span></button>
+      <button role="tab" data-v="rev" aria-selected="false"><span class="navico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v-5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.1 8.2A7 7 0 0 1 18.8 7L20 9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.9 15.8A7 7 0 0 1 5.2 17L4 15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Réviser</span></button>
+      <button role="tab" data-v="epr" aria-selected="false"><span class="navico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3.5h9l3 3V20.5H6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 3.5v3h3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 11h6M9 14h6M9 17h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Épreuve</span></button>
+      <button role="tab" data-v="fic" aria-selected="false"><span class="navico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 6.5h12.5A1.5 1.5 0 0 1 19 8v10.5H6.5A1.5 1.5 0 0 1 5 17z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 8H3.5A1.5 1.5 0 0 0 2 9.5V20h13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10.5h6M9 13.5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Fiches</span></button>
+      <button role="tab" data-v="pro" aria-selected="false"><span class="navico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20V10M10 20V5M16 20v-8M22 20H2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Progrès</span></button>
     </nav>
   </div>
 </header>
@@ -703,9 +786,9 @@ button,.btn,.pill,summary,input,textarea{touch-action:manipulation}
   <div id="home-priority"></div>
   <div class="section-title"><h2>Continuer</h2><span>Choisis ton rythme</span></div>
   <div class="home-grid">
-    <button class="home-action" id="home-quick"><span class="ico">10</span><b>Défi rapide</b><small>10 questions, environ 4 minutes</small></button>
-    <button class="home-action" id="home-exam"><span class="ico">P2</span><b>Paper 2</b><small>Plan express, guidé ou conditions d’examen</small></button>
-    <button class="home-action" id="home-fiches"><span class="ico">Aa</span><b>Fiches</b><small>Cours, tests ciblés et Paper 2</small></button>
+    <button class="home-action" id="home-quick"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.5 2.8 5.5 13h6l-1 8.2 8-11h-6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Défi rapide</b><small>10 questions, environ 4 minutes</small></button>
+    <button class="home-action" id="home-exam"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3.5h9l3 3V20.5H6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 3.5v3h3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 11h6M9 14h6M9 17h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Paper 2</b><small>Plan express, guidé ou conditions d’examen</small></button>
+    <button class="home-action" id="home-fiches"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4.5h10.5A2.5 2.5 0 0 1 18 7v12H7.2A2.2 2.2 0 0 1 5 16.8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 19V7a2.5 2.5 0 0 1 2-2.4V17a2 2 0 0 1-2 2z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8h6M8.5 11h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Fiches</b><small>Cours, tests ciblés et Paper 2</small></button>
   </div>
   <div id="home-latest"></div>
 </section>
@@ -715,10 +798,10 @@ button,.btn,.pill,summary,input,textarea{touch-action:manipulation}
   <div id="setup">
     <div class="rev-intro"><h1>Réviser</h1><p>Choisis une séance rapide ou construis une révision très précise.</p></div>
     <div class="rev-quick">
-      <button class="rev-card" id="rev-due"><span class="r-ico">↻</span><b>Révision du jour</b><span>Les questions qui arrivent à échéance</span><em id="rev-due-count">0</em></button>
-      <button class="rev-card" id="rev-fast"><span class="r-ico">10</span><b>Défi rapide</b><span>Dix questions prises dans tout le programme</span><em>≈ 4 min</em></button>
-      <button class="rev-card" id="rev-errors"><span class="r-ico">!</span><b>Mes difficultés</b><span>Reprendre les notions déjà ratées</span><em id="rev-errors-count">0</em></button>
-      <button class="rev-card" id="rev-custom"><span class="r-ico">⌘</span><b>Choisir précisément</b><span>Unité, pays, corpus et facteur</span><em>Avancé</em></button>
+      <button class="rev-card" id="rev-due"><span class="r-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12l3.2 2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 5.5 3.5 7.5M18.5 5.5l2 2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Révision du jour</b><span>Les questions qui arrivent à échéance</span><em id="rev-due-count">0</em></button>
+      <button class="rev-card" id="rev-fast"><span class="r-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.5 2.8 5.5 13h6l-1 8.2 8-11h-6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Défi rapide</b><span>Dix questions prises dans tout le programme</span><em>≈ 4 min</em></button>
+      <button class="rev-card" id="rev-errors"><span class="r-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/><path d="M17.8 6.2 21 3M18 3h3v3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Mes difficultés</b><span>Reprendre les notions déjà ratées</span><em id="rev-errors-count">0</em></button>
+      <button class="rev-card" id="rev-custom"><span class="r-ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 17h16M8 4v6M16 14v6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="7" r="1.8" fill="white" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="17" r="1.8" fill="white" stroke="currentColor" stroke-width="1.8"/></svg></span><b>Choisir précisément</b><span>Unité, pays, corpus et facteur</span><em>Avancé</em></button>
     </div>
     <details class="custom-panel" id="custom-panel">
       <summary>Réglages de la séance</summary>
