@@ -903,6 +903,14 @@ body:not(.welcome-active) .course-card-v7:before{
   body:not(.welcome-active) .wrap{width:calc(100% - 10px);margin-top:5px;padding-left:10px;padding-right:10px;border-radius:21px 21px 0 0}
 }
 
+/* V7.3 · filtres locaux et lecture des fiches */
+.course-case-row{display:none!important}
+.study-key{font-weight:800;color:var(--bs-navy);padding:0 .1em;border-radius:.25em;background:linear-gradient(transparent 52%,rgba(239,178,45,.32) 52%);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.study-key-date{background:rgba(0,135,202,.10);border-bottom:1px solid rgba(0,135,202,.34);color:var(--bs-mid)}
+.course-context-v7{border-color:rgba(0,135,202,.28)!important;box-shadow:0 8px 20px rgba(0,38,84,.08)}
+body:not(.welcome-active) .wrap{border-top:4px solid var(--bs-bright);box-shadow:0 14px 42px rgba(0,38,84,.16)}
+@media(max-width:760px){body:not(.welcome-active){background:linear-gradient(180deg,var(--bs-navy) 0 82px,var(--bs-mid) 82px 160px,var(--bs-bright) 160px 194px,#c9e2f1 194px 100%)}}
+
 </style>
 </head>
 <body class="welcome-active">
@@ -1764,6 +1772,123 @@ function exportStore(){const payload={app:'HistoryLab · Beau Soleil',version:7,
 async function importStore(e){const f=e.target.files&&e.target.files[0],msg=$('#toolmsg');if(!f)return;try{const obj=JSON.parse(await f.text()),src=obj.store||obj;if(!src||typeof src!=='object'||!src.l)throw new Error('format');if(!confirm('Remplacer les données actuelles par cette sauvegarde ?'))return;store=normalizeStore(src);save();if(msg)msg.textContent='Sauvegarde importée.';drawProgres();drawChoix();drawEpr();drawCopies()}catch(err){if(msg)msg.textContent='Fichier de sauvegarde non reconnu.'}finally{e.target.value=''}}
 
 drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
+
+/* ==================== V7.3 · filtres independants + fiches plus lisibles ==================== */
+(function(){
+  const LEGACY_TARGET = ['all','DE','CN'].includes(store.targetCase) ? store.targetCase : 'all';
+  const oldNormalizeStore = normalizeStore;
+  normalizeStore = function(s){
+    s=oldNormalizeStore(s);
+    const legacy=['all','DE','CN'].includes(s.targetCase)?s.targetCase:'all';
+    s.targets=s.targets&&typeof s.targets==='object'?s.targets:{};
+    ['fic','flash','epr'].forEach(k=>{if(!['all','DE','CN'].includes(s.targets[k]))s.targets[k]=legacy});
+    return s;
+  };
+  store.targets=store.targets&&typeof store.targets==='object'?store.targets:{};
+  ['fic','flash','epr'].forEach(k=>{if(!['all','DE','CN'].includes(store.targets[k]))store.targets[k]=LEGACY_TARGET});
+  save();
+  HISTORYLAB_CONFIG.engineVersion=7.3;
+
+  function activeStudySection(){
+    if($('#v-fic')&&!$('#v-fic').hidden)return 'fic';
+    if($('#v-flash')&&!$('#v-flash').hidden)return 'flash';
+    if($('#v-epr')&&!$('#v-epr').hidden)return 'epr';
+    return null;
+  }
+  currentTarget=function(){const section=activeStudySection();if(!section)return 'all';const t=store.targets&&store.targets[section];return ['all','DE','CN'].includes(t)?t:'all'};
+  targetLabel=function(v=currentTarget()){return v==='DE'?'Hitler':v==='CN'?'Mao':(store.lang==='en'?'Both':'Les deux')};
+  caseMatch=function(x,target=currentTarget()){return target==='all'||x.p===target};
+
+  setTargetCase=function(v){
+    if(!['all','DE','CN'].includes(v))return;
+    const section=activeStudySection();if(!section)return;
+    store.targets[section]=v;save();
+    if(section==='fic'){F.pays=v;drawFiches()}
+    else if(section==='flash'){drawFlash()}
+    else drawCourseContext('epr');
+  };
+  caseSwitchHtml=function(prefix='case',section=activeStudySection()||'fic'){
+    const cur=(store.targets&&store.targets[section])||'all',labs=store.lang==='en'?{all:'Both',DE:'Hitler',CN:'Mao'}:{all:'Les deux',DE:'Hitler',CN:'Mao'};
+    return '<div class="case-switch" data-case-switch="'+prefix+'" data-target-section="'+section+'">'+['all','DE','CN'].map(v=>'<button type="button" data-case="'+v+'" aria-pressed="'+(cur===v)+'">'+labs[v]+'</button>').join('')+'</div>';
+  };
+  wireCaseSwitches=function(){ $$('[data-case-switch] [data-case]').forEach(b=>b.onclick=()=>setTargetCase(b.dataset.case)); };
+  drawCourseContext=function(section=activeStudySection()||'fic'){
+    const target=(store.targets&&store.targets[section])||'all';
+    const n=DATA.items.filter(x=>caseMatch(x,target)).length;
+    const title=section==='fic'?(store.lang==='en'?'Choose what to study':'Choisis ce que tu veux travailler'):section==='flash'?(store.lang==='en'?'Flash focus':'Focus Flash!'):(store.lang==='en'?'Exam focus':'Focus Épreuve');
+    const note=section==='epr'&&target!=='all'?(store.lang==='en'?'For single-example tasks, favour '+targetLabel(target)+'. Comparative part (b) still uses both cases.':'Pour les exercices à un seul exemple, privilégie '+targetLabel(target)+'. La partie (b) comparative garde les deux cas.'):(store.lang==='en'?'This choice only applies here.':'Ce choix ne s’applique qu’à cette rubrique.');
+    const html='<div class="course-context-v7"><div class="course-context-copy"><small>'+title+'</small><b>'+targetLabel(target)+'</b><span class="tiny" style="color:var(--ink3)">'+n+' '+(store.lang==='en'?'questions available':'questions disponibles')+' · '+note+'</span></div>'+caseSwitchHtml('context-'+section,section)+'</div>';
+    const id=section==='fic'?'#fiche-course-context':section==='flash'?'#flash-course-context':'#exam-course-context';
+    const e=$(id);if(e)e.innerHTML=html;wireCaseSwitches();
+  };
+
+  const oldDrawFiches=drawFiches;
+  const oldDetailedItems=detailedItemsForFiche;
+  const commonFiches=new Set(['cadre','c5']);
+  const sectionScopes={
+    cadre:['all','X','all','all'],contextes:['DE','CN','X','all'],idees:['DE','CN','X','all'],
+    conflits:['DE','CN','X','all'],social:['DE','CN','X','all'],jan33:['DE','DE','DE','DE','DE','DE'],
+    c0:['all','all','X','all','all','X','all'],droit:['DE','CN','X','all'],force:['DE','CN','X','all'],
+    propagande:['DE','CN','all','all'],soutien:['DE','CN','all','all'],c5:['all','all','all','all','all']
+  };
+  function visibleScope(scope,target){return target==='all'||scope==='all'||scope===target}
+  detailedItemsForFiche=function(def){
+    const t=currentTarget();if(t==='all')return oldDetailedItems(def);
+    const byCorpus={};def.corpora.forEach(c=>byCorpus[c]=DATA.items.filter(x=>x.c===c&&caseMatch(x,t)&&!DETAIL_SKIP_RX.test(x.q)).sort((a,b)=>detailScore(b)-detailScore(a)));
+    const limit=def.corpora.length>1?10:8,out=[];let round=0;
+    while(out.length<limit&&round<12){let added=false;def.corpora.forEach(c=>{const arr=byCorpus[c]||[];if(arr[round]&&out.length<limit){out.push(arr[round]);added=true}});if(!added)break;round++}
+    return out;
+  };
+
+  const wordsByFiche={
+    cadre:['régime autoritaire','totalitarisme','pluralisme politique','idéologie officielle','parti unique','police politique','causalité'],
+    contextes:['République de Weimar','Grande Dépression','fragmentation politique','siècle des traités','PCC','Mao'],
+    idees:['Volksgemeinschaft','Lebensraum','antisémitisme','paysannerie','violence révolutionnaire','NSDAP','PCC'],
+    eco:['plan Dawes','Grande Dépression','austérité','réforme agraire','hyperinflation','NSDAP','Guomindang'],
+    conflits:['traité de Versailles','guerre civile','guerre sino-japonaise','Longue Marche','violence politique','NSDAP','PCC'],
+    social:['classes moyennes','paysannerie','réforme agraire','base sociale','ralliement','NSDAP','PCC'],
+    jan33:['chancellerie','élites conservatrices','recul électoral','majorité absolue','Papen','Schleicher','Hindenburg','Hitler'],
+    c0:['émergence','maintien','méthodes juridiques','force','propagande','soutien populaire','comparaison'],
+    droit:['méthodes juridiques','mise au pas','pluralisme politique','loi agraire','loi sur le mariage','Reichstag'],
+    force:['répression','police politique','campagnes de masse','Gestapo','SA','SS','PCC'],
+    propagande:['propagande','monopole culturel','culte de la personnalité','mobilisation','Goebbels','Reichskulturkammer'],
+    soutien:['soutien populaire','consentement','participation','encadrement social','Front du travail','Kraft durch Freude'],
+    c5:['Section A','Section B(a)','Section B(b)','thèse','comparaison','limite','contre-exemple','jugement']
+  };
+  function escRx(x){return x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+  function highlightFiche(root,id){
+    if(!root||!id)return;const phrases=(wordsByFiche[id]||[]).slice().sort((a,b)=>b.length-a.length).map(escRx);
+    const rx=new RegExp('('+(phrases.length?phrases.join('|')+'|':'')+'\\b(?:18|19|20)\\d{2}(?:[-–]\\d{2,4})?\\b|\\b\\d+(?:[.,]\\d+)?\\s?%)','gi');
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||!node.nodeValue.trim()||p.closest('button,summary,.study-key,.tag,.label,.source-note,.study-back'))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(node=>{const txt=node.nodeValue;rx.lastIndex=0;if(!rx.test(txt))return;rx.lastIndex=0;const frag=document.createDocumentFragment();let last=0,m;while((m=rx.exec(txt))){if(m.index>last)frag.appendChild(document.createTextNode(txt.slice(last,m.index)));const sp=document.createElement('span'),val=m[0];sp.className=/^\d/.test(val)?'study-key study-key-date':'study-key';sp.textContent=val;frag.appendChild(sp);last=m.index+val.length}if(last<txt.length)frag.appendChild(document.createTextNode(txt.slice(last)));node.parentNode.replaceChild(frag,node)});
+  }
+  function applyFicheFilter(){
+    const target=(store.targets&&store.targets.fic)||'all',root=$('#ficbody');if(!root)return;
+    if(!FICHE_OPEN){root.querySelectorAll('[data-fiche]').forEach(card=>{const id=card.dataset.fiche,d=STUDY_FICHES[id];if(target!=='all'&&!commonFiches.has(id)&&d&&studyCount(d,target)===0)card.remove()});return}
+    const d=STUDY_FICHES[FICHE_OPEN];if(!d)return;
+    const scopes=FICHE_OPEN==='eco'?['DE','CN','X','all']:(sectionScopes[FICHE_OPEN]||[]),details=[...root.querySelectorAll('.study-section')];
+    if(target!=='all')scopes.forEach((scope,i)=>{if(details[i]&&!visibleScope(scope,target))details[i].remove()});
+    const n=Math.min(d.testN||10,studyCount(d,target));['#fiche-test','#fiche-test2'].forEach(sel=>{const b=$(sel);if(b){b.textContent='Tester cette fiche · '+n+' questions';b.disabled=!n}});
+    highlightFiche(root,FICHE_OPEN);
+  }
+  drawFiches=function(){F.pays=(store.targets&&store.targets.fic)||'all';oldDrawFiches();applyFicheFilter();drawCourseContext('fic')};
+
+  const oldShowExamHub=showExamHub;
+  showExamHub=function(){oldShowExamHub();drawCourseContext('epr')};
+  const oldDrawFlash=drawFlash;
+  drawFlash=function(){oldDrawFlash();drawCourseContext('flash')};
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const hub=$('#exam-hub .exam-hub-head');if(hub&&!$('#exam-course-context'))hub.insertAdjacentHTML('afterend','<div id="exam-course-context"></div>');
+    F.pays=(store.targets&&store.targets.fic)||'all';
+    drawHome();
+    if(!$('#v-fic').hidden)drawFiches();
+    if(!$('#v-flash').hidden)drawFlash();
+    if(!$('#v-epr').hidden)drawCourseContext('epr');
+  });
+})();
+
 </script>
 
 <script>
