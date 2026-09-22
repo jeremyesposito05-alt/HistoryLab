@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7.9-iphone-identity';
+const CACHE = 'historylab-v7.10-daily-queue';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
