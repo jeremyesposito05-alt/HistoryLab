@@ -911,7 +911,7 @@ body:not(.welcome-active) .course-card-v7:before{
 body:not(.welcome-active) .wrap{border-top:4px solid var(--bs-bright);box-shadow:0 14px 42px rgba(0,38,84,.16)}
 @media(max-width:760px){body:not(.welcome-active){background:linear-gradient(180deg,var(--bs-navy) 0 82px,var(--bs-mid) 82px 160px,var(--bs-bright) 160px 194px,#c9e2f1 194px 100%)}}
 
-/* V7.6 · correctif navigation révisions + audit pédagogique */
+/* V7.7 · correctif navigation révisions + audit pédagogique */
 .brand-home-link{cursor:pointer;user-select:none}
 .brand-home-link:focus-visible{outline:3px solid var(--bs-gold);outline-offset:3px}
 .settings-shortcut{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid rgba(255,255,255,.24);border-radius:13px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:.16s ease}
@@ -1765,7 +1765,7 @@ function drawFiches(){
   }else if(FT==='glo'){
     b.style.removeProperty('--study-accent');b.innerHTML='<div class="card"><div class="pills" id="gu" style="margin-bottom:14px"></div><label class="sr-only" for="gs">Chercher dans le glossaire</label><input type="search" id="gs" aria-label="Chercher dans le glossaire" placeholder="Chercher un terme…"><div id="gl"></div></div>';
     const paintU=()=>pills($('#gu'),[{v:'all',l:'Tout',sm:true},{v:'U1',l:'Unité 1.1',sm:true},{v:'U2',l:'Unité 1.2',sm:true}],v=>GU===v,v=>{GU=v;paintU();paint()});
-    const paint=()=>{const q=($('#gs').value||'').toLowerCase(),rows=DATA.glossaire.map((g,i)=>({g,i})).filter(x=>GU==='all'||x.g.u===GU).filter(x=>!q||x.g.t.toLowerCase().includes(q)||x.g.d.toLowerCase().includes(q));$('#gl').innerHTML=rows.length?rows.map(x=>'<div class="glo"><b>'+esc(x.g.t)+'</b> <span class="tiny muted">'+esc((x.g.u==='U1'?'1.1 · ':'1.2 · ')+x.g.c)+'</span><div class="d">'+esc(x.g.d)+'</div><button class="btn sec sm" data-gq="'+x.i+'" style="margin-top:8px">Réviser ce corpus</button></div>').join(''):'<p class="small muted">Aucun terme.</p>';$('[data-gq]').forEach(bt=>bt.onclick=()=>{const g=DATA.glossaire[+bt.dataset.gq];resetRevision();F.unite=g.u;F.pays='all';F.serie='alea';F.nb=10;F.corpus.clear();F.corpus.add(g.c);F.axe.clear();drawChoix();if(!launchQuizFromCurrentSelection()){activateView('fic')}})};$('#gs').oninput=paint;paintU();paint();
+    const paint=()=>{const q=($('#gs').value||'').toLowerCase(),rows=DATA.glossaire.map((g,i)=>({g,i})).filter(x=>GU==='all'||x.g.u===GU).filter(x=>!q||x.g.t.toLowerCase().includes(q)||x.g.d.toLowerCase().includes(q));$('#gl').innerHTML=rows.length?rows.map(x=>'<div class="glo"><b>'+esc(x.g.t)+'</b> <span class="tiny muted">'+esc((x.g.u==='U1'?'1.1 · ':'1.2 · ')+x.g.c)+'</span><div class="d">'+esc(x.g.d)+'</div><button class="btn sec sm" data-gq="'+x.i+'" style="margin-top:8px">Réviser ce corpus</button></div>').join(''):'<p class="small muted">Aucun terme.</p>';$$('[data-gq]').forEach(bt=>bt.onclick=()=>{const g=DATA.glossaire[+bt.dataset.gq];resetRevision();F.unite=g.u;F.pays='all';F.serie='alea';F.nb=10;F.corpus.clear();F.corpus.add(g.c);F.axe.clear();drawChoix();if(!launchQuizFromCurrentSelection()){activateView('fic')}})};$('#gs').oninput=paint;paintU();paint();
   }else if(FT==='conc'){b.style.removeProperty('--study-accent');b.innerHTML='<div class="card"><p class="small muted" style="margin-top:0">Définitions du guide de l’IB, citées mot pour mot.</p><div class="scroll"><table><tr><th>Concept</th><th>Définition du guide</th><th>Un exemple</th></tr>'+DATA.concepts.map(c=>'<tr><td><b>'+esc(c.n)+'</b></td><td>'+esc(c.d)+'</td><td>'+esc(c.e)+'</td></tr>').join('')+'</table></div></div>';
   }else{b.style.removeProperty('--study-accent');b.innerHTML='<div class="card"><p class="small muted" style="margin-top:0">Partie (b), 15 points. Lisez de bas en haut.</p><div class="scroll"><table><tr><th>Points</th><th>Descripteur officiel</th></tr>'+DATA.bandes.map(x=>'<tr><td><b>'+esc(x.p)+'</b></td><td>'+esc(x.d)+'</td></tr>').join('')+'</table></div></div>'}
 }
@@ -1952,9 +1952,9 @@ drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-/* V7.6 · correctif navigation révisions + retour accueil + réglages */
+/* V7.7 · correctif navigation révisions + retour accueil + réglages */
 (function(){
-  HISTORYLAB_CONFIG.engineVersion=7.6;
+  HISTORYLAB_CONFIG.engineVersion=7.7;
   const brand=document.querySelector('.brand');
   if(brand){
     brand.classList.add('brand-home-link');
@@ -1981,7 +1981,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.6</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.7</div></section>';
     document.body.appendChild(o);
   }
 
