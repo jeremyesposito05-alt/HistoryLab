@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7.3-local-filters-1';
+const CACHE = 'historylab-v7.5-pedagogy-priority1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
