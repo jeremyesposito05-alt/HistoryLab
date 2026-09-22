@@ -911,7 +911,7 @@ body:not(.welcome-active) .course-card-v7:before{
 body:not(.welcome-active) .wrap{border-top:4px solid var(--bs-bright);box-shadow:0 14px 42px rgba(0,38,84,.16)}
 @media(max-width:760px){body:not(.welcome-active){background:linear-gradient(180deg,var(--bs-navy) 0 82px,var(--bs-mid) 82px 160px,var(--bs-bright) 160px 194px,#c9e2f1 194px 100%)}}
 
-/* V7.7 · correctif navigation révisions + audit pédagogique */
+/* V7.8 · diagnostic profil + répétition espacée + navigation révisions */
 .brand-home-link{cursor:pointer;user-select:none}
 .brand-home-link:focus-visible{outline:3px solid var(--bs-gold);outline-offset:3px}
 .settings-shortcut{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid rgba(255,255,255,.24);border-radius:13px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:.16s ease}
@@ -1232,6 +1232,7 @@ function normalizeStore(s){
   s.draft = s.draft && typeof s.draft==='object' ? s.draft : null;
   s.days = Array.isArray(s.days) ? s.days.map(Number).filter(Number.isFinite) : [];
   s.profileName = typeof s.profileName==='string' ? s.profileName : '';
+  s.profileBuilt = !!s.profileBuilt;
   s.lang = s.lang==='en' ? 'en' : 'fr';
   s.targetCase = ['all','DE','CN'].includes(s.targetCase) ? s.targetCase : 'all';
   Object.keys(s.l).forEach(k => {
@@ -1294,11 +1295,13 @@ function streak(){const days=activeDays();if(!days.length)return 0;const set=new
 function currentTarget(){return store.targetCase||'all'}
 function targetLabel(v=currentTarget()){return v==='DE'?'Hitler':v==='CN'?'Mao':(store.lang==='en'?'Both':'Les deux')}
 function caseMatch(x,target=currentTarget()){return target==='all'||x.p===target}
-function axisStats(a,target='all'){const its=DATA.items.filter(x=>x.a===a&&caseMatch(x,target)),seen=its.filter(x=>(store.l[x.i]||{}).seen>0).length,mastered=its.filter(x=>isMastered(store.l[x.i])).length,wrong=its.reduce((n,x)=>n+((store.l[x.i]||{}).wrongTotal||0),0),due=its.filter(x=>{const st=store.l[x.i];return st&&st.seen>0&&st.due<=today()}).length;return{a,its,seen,mastered,wrong,due,pct:its.length?Math.round(mastered/its.length*100):0}}
-function priorityAxis(target='all'){const arr=Object.keys(AXES).map(a=>axisStats(a,target)).filter(x=>x.its.length&&x.seen);if(!arr.length)return null;return arr.sort((a,b)=>(b.wrong-a.wrong)||((100-a.pct)-(100-b.pct)))[0]}
+function axisStats(a,target='all'){const its=DATA.items.filter(x=>x.a===a&&caseMatch(x,target)),states=its.map(x=>store.l[x.i]||{}),seen=states.filter(s=>(s.seen||0)>0).length,mastered=its.filter(x=>isMastered(store.l[x.i])).length,wrong=states.reduce((n,s)=>n+(s.wrongTotal||0),0),openErrors=states.filter(s=>(s.ko||0)>0).length,attempts=states.reduce((n,s)=>n+(s.seen||0),0),correct=states.reduce((n,s)=>n+(s.ok||0),0),accuracy=attempts?Math.round(correct/attempts*100):null,due=its.filter(x=>{const st=store.l[x.i];return st&&st.seen>0&&st.due<=today()}).length;return{a,its,seen,mastered,wrong,openErrors,attempts,correct,accuracy,due,pct:its.length?Math.round(mastered/its.length*100):0}}
+function priorityAxis(target='all'){const arr=Object.keys(AXES).map(a=>axisStats(a,target)).filter(x=>x.its.length&&x.attempts);if(!arr.length)return null;const weak=arr.filter(x=>x.openErrors>0||x.accuracy<100);if(!weak.length)return null;return weak.sort((a,b)=>(b.openErrors-a.openErrors)||((a.accuracy??100)-(b.accuracy??100))||(b.wrong-a.wrong)||((100-a.pct)-(100-b.pct)))[0]}
 function countDue(target=currentTarget()){return DATA.items.filter(x=>caseMatch(x,target)).filter(x=>{const st=store.l[x.i];return st&&st.seen>0&&st.due<=today()}).length}
-function countErrors(target=currentTarget()){return DATA.items.filter(x=>caseMatch(x,target)&&(store.l[x.i]||{}).wrongTotal>0).length}
+function countErrors(target=currentTarget()){return DATA.items.filter(x=>caseMatch(x,target)&&(store.l[x.i]||{}).ko>0).length}
 function resetRevision(){F.unite='all';F.pays=currentTarget();F.serie='alea';F.nb=10;F.corpus.clear();F.axe.clear()}
+const PROFILE_DIAGNOSTIC_IDS=['A1-02','B1-02','A2-09','B2-13','A3-15','B3-07','A4-16','B4-12','C1-03','C1-32','C2-07','C2-19','C3-04','C3-14','C4-04','C4-24'];
+function startProfileDiagnostic(){const q=PROFILE_DIAGNOSTIC_IDS.map(id=>DATA.items.find(x=>x.i===id)).filter(Boolean);if(q.length)launchQuizSet(shuffle(q),'profile')}
 function startPreset(kind,axis){resetRevision();if(kind==='due')F.serie='due';if(kind==='errors')F.serie='err';if(axis)F.axe.add(axis);F.nb=kind==='due'?20:10;drawChoix();if(!launchQuizFromCurrentSelection()){activateView(kind==='due'||kind==='errors'?'flash':'fic')}}
 function setTargetCase(v){if(!['all','DE','CN'].includes(v))return;store.targetCase=v;save();F.pays=v;drawHome();drawFlash();drawCourseContext();if(!$('#v-fic').hidden){drawChoix();drawFiches()}applyLanguage()}
 function caseSwitchHtml(prefix='case'){
@@ -1318,7 +1321,7 @@ function drawHome(){
   $('#dash-message').textContent=due?(store.lang==='en'?due+' questions are ready for today.':due+' '+(due>1?'questions sont prêtes':'question est prête')+' pour aujourd’hui.'):(seen?(store.lang==='en'?'Nothing is due right now. Keep the rhythm going.':'Rien n’est dû pour le moment. Garde le rythme avec une courte séance.'):(store.lang==='en'?'Start a first session to build your learning profile.':'Commence une première séance pour construire ton profil de révision.'));
   $('#dash-inline-stats').innerHTML='<span class="dash-pill"><b>'+mastered+'/'+total+'</b> '+(store.lang==='en'?'mastered':'maîtrisées')+'</span><span class="dash-pill"><b>'+due+'</b> '+(store.lang==='en'?'due':'à revoir')+'</span><span class="dash-pill"><b>'+st+'</b> '+(store.lang==='en'?'day streak':'jours de série')+'</span>';
   if(pr){$('#dashboard-priority').innerHTML='<div class="priority-ico">★</div><div class="priority-main"><small>'+(store.lang==='en'?'Priority':'Priorité')+' · '+targetLabel()+'</small><b>'+esc(AXES[pr.a])+'</b><span>'+pr.mastered+'/'+pr.its.length+' '+(store.lang==='en'?'mastered':'maîtrisées')+(pr.wrong?' · '+pr.wrong+' '+(store.lang==='en'?'errors':'erreurs'):'')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Work on it':'Travailler')+'</button>';$('#dash-priority-go').onclick=()=>startPreset(pr.wrong?'errors':'quick',pr.a)}
-  else{$('#dashboard-priority').innerHTML='<div class="priority-ico">→</div><div class="priority-main"><small>'+(store.lang==='en'?'First goal':'Premier objectif')+'</small><b>'+(store.lang==='en'?'Build your learning profile':'Construire ton profil')+'</b><span>'+(store.lang==='en'?'A few questions are enough to identify priorities.':'Quelques questions suffisent pour identifier les priorités.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Start':'Commencer')+'</button>';$('#dash-priority-go').onclick=()=>{activateView('flash')}}
+  else{$('#dashboard-priority').innerHTML='<div class="priority-ico">→</div><div class="priority-main"><small>'+(store.lang==='en'?'First goal':'Premier objectif')+'</small><b>'+(store.lang==='en'?'Build your learning profile':'Construire ton profil')+'</b><span>'+(store.lang==='en'?'16 diagnostic questions across Hitler, Mao, emergence and maintenance.':'16 questions diagnostiques, équilibrées entre Hitler, Mao, émergence et maintien.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Start diagnostic':'Lancer le diagnostic')+'</button>';$('#dash-priority-go').onclick=()=>startProfileDiagnostic()
   const u1=DATA.items.filter(x=>x.u==='U1'&&caseMatch(x,target)),u2=DATA.items.filter(x=>x.u==='U2'&&caseMatch(x,target)),p1=u1.length?Math.round(u1.filter(x=>isMastered(store.l[x.i])).length/u1.length*100):0,p2=u2.length?Math.round(u2.filter(x=>isMastered(store.l[x.i])).length/u2.length*100):0;
   $('#course-list').innerHTML='<div class="course-card-v7"><button type="button" class="course-card-head course-open-v71" id="course-open" aria-label="Ouvrir le cours"><div class="course-badge">2</div><div><h3>'+(store.lang==='en'?'Authoritarian regimes':'Régimes autoritaires')+'</h3><p>Hitler & Mao · Paper 2 · '+(store.lang==='en'?'2 units':'2 unités')+'</p></div><div class="course-pct"><b>'+coursePct+'%</b><small>'+targetLabel()+'</small></div></button><div class="course-progress"><i style="width:'+coursePct+'%"></i></div><div class="course-case-row"><span>'+(store.lang==='en'?'Study':'Je travaille')+'</span>'+caseSwitchHtml('home')+'</div><div class="course-card-actions"><button class="btn sec sm" id="course-fiches">'+(store.lang==='en'?'Study sheets':'Fiches')+'</button><button class="btn sm" id="course-flash">Flash!</button></div><div class="dash-inline-stats" style="margin-top:11px"><span class="dash-pill"><b>'+p1+'%</b> '+(store.lang==='en'?'Emergence':'Émergence')+'</span><span class="dash-pill"><b>'+p2+'%</b> '+(store.lang==='en'?'Maintenance':'Maintien')+'</span></div></div>';
   $('#course-count-label').textContent=store.lang==='en'?'1 course available':'1 cours disponible';wireCaseSwitches();if($('#course-open'))$('#course-open').onclick=()=>activateView('fic');$('#course-fiches').onclick=()=>activateView('fic');$('#course-flash').onclick=()=>activateView('flash');
@@ -1332,7 +1335,7 @@ function match(x){
   return (F.unite==='all' || x.u===F.unite) && (F.pays==='all' || x.p===F.pays) &&
     (!F.corpus.size || F.corpus.has(x.c)) && (!F.axe.size || F.axe.has(x.a)) &&
     (F.serie==='alea' ? true :
-      F.serie==='err' ? !!s && (s.wrongTotal||0)>0 :
+      F.serie==='err' ? !!s && (s.ko||0)>0 :
       F.serie==='new' ? !s || !s.seen :
       !!s && s.seen>0 && s.due<=today());
 }
@@ -1384,18 +1387,21 @@ if($('#rev-custom'))$('#rev-custom').onclick=()=>{const d=$('#custom-panel');d.o
 
 /* ===================== quiz ===================== */
 let S=null;
-function launchQuizFromCurrentSelection(){
-  let p=pool();
-  if(F.serie==='alea'||F.serie==='new')p=shuffle(p);
-  if(F.nb>0)p=p.slice(0,F.nb);
-  if(!p.length)return false;
-  S={q:p,i:0,ok:0,wrong:[],t0:Date.now(),answered:false,masteredGain:0,streak:0};
+function launchQuizSet(p,kind='standard'){
+  if(!p||!p.length)return false;
+  S={q:p,i:0,ok:0,wrong:[],t0:Date.now(),answered:false,masteredGain:0,streak:0,kind};
   activateView('rev');
   if($('#setup'))$('#setup').hidden=true;
   if($('#done'))$('#done').hidden=true;
   if($('#quiz'))$('#quiz').hidden=false;
   render();
   return true;
+}
+function launchQuizFromCurrentSelection(){
+  let p=pool();
+  if(F.serie==='alea'||F.serie==='new')p=shuffle(p);
+  if(F.nb>0)p=p.slice(0,F.nb);
+  return launchQuizSet(p,'standard');
 }
 $('#go').onclick=()=>launchQuizFromCurrentSelection();
 $('#quit').onclick=()=>finish();
@@ -1435,10 +1441,10 @@ function totals(filter){let n=0,ok=0;DATA.items.forEach(x=>{if(filter&&!filter(x
 $('#next').onclick=()=>{S.i++;S.i>=S.q.length?finish():render()};
 document.addEventListener('keydown',e=>{if($('#quiz').hidden||!$('#sheet').hidden)return;if(!S.answered&&e.key>='1'&&e.key<='4'){const b=$$('#opts .opt')[+e.key-1];if(b)b.click()}else if(S.answered&&(e.key==='Enter'||e.key===' ')){e.preventDefault();$('#next').click()}});
 function finish(){
-  const total=S.i+(S.answered?1:0),mins=Math.max(1,Math.round((Date.now()-S.t0)/60000)),pct=total?Math.round(S.ok/total*100):0;$('#quiz').hidden=true;$('#done').hidden=false;
+  const total=S.i+(S.answered?1:0),mins=Math.max(1,Math.round((Date.now()-S.t0)/60000)),pct=total?Math.round(S.ok/total*100):0;if(S.kind==='profile'&&total){store.profileBuilt=true;save()}$('#quiz').hidden=true;$('#done').hidden=false;
   const wrongAxes=[...new Set(S.wrong.map(x=>x.a))],goodAxes=[...new Set(S.q.filter(x=>!S.wrong.some(w=>w.i===x.i)).map(x=>x.a))].filter(a=>!wrongAxes.includes(a));
   const scene=pct===100?'perfect':pct>=80?'high':pct>=50?'medium':'low';
-  let h=duoStage(scene)+ '<div class="result-hero"><div class="result-score">'+S.ok+' / '+total+'</div><div class="result-pct">'+pct+' % de réponses justes · '+plur(mins,'minute')+'</div>'+(S.masteredGain?'<div class="result-gain">+'+S.masteredGain+' '+(S.masteredGain>1?'questions maîtrisées':'question maîtrisée')+'</div>':'')+'</div>';
+  let h=duoStage(scene)+ '<div class="result-hero"><div class="result-score">'+S.ok+' / '+total+'</div><div class="result-pct">'+pct+' % de réponses justes · '+plur(mins,'minute')+'</div>'+(S.masteredGain?'<div class="result-gain">+'+S.masteredGain+' '+(S.masteredGain>1?'questions maîtrisées':'question maîtrisée')+'</div>':'')+'</div>';if(S.kind==='profile')h+='<div class="card"><h2>Ton profil initial est construit</h2><p class="small muted">HistoryLab peut maintenant identifier tes priorités. Les réponses fausses passent immédiatement dans Défi erreurs et sont dues aujourd’hui. Les réponses justes seront reproposées demain, puis espacées selon tes réussites.</p></div>';
   h+='<div class="result-grid">';
   h+='<div class="card"><h2>Solide</h2>'+(goodAxes.length?goodAxes.slice(0,4).map(a=>'<span class="result-chip">'+esc(AXES[a])+'</span>').join(''):'<p class="small muted">La série était exigeante. Continue, la répétition fera la différence.</p>')+'</div>';
   h+='<div class="card"><h2>À retravailler</h2>'+(wrongAxes.length?wrongAxes.map(a=>'<span class="result-chip">'+esc(AXES[a])+'</span>').join(''):'<p class="small muted">Aucune erreur sur cette série.</p>')+'</div></div>';
@@ -1787,8 +1793,10 @@ function applyLanguage(){
 }
 function setLanguage(lang){store.lang=lang==='en'?'en':'fr';save();applyLanguage();drawHome();drawFlash();drawCourseContext()}
 function drawFlash(){
-  const due=countDue(),err=countErrors();if($('#flash-due-count'))$('#flash-due-count').textContent=due;if($('#flash-errors-count'))$('#flash-errors-count').textContent=err;
-  if($('#flash-due'))$('#flash-due').disabled=!due;if($('#flash-errors'))$('#flash-errors').disabled=!err;drawCourseContext();
+  const due=countDue(),err=countErrors(),dueBtn=$('#flash-due'),errBtn=$('#flash-errors');if($('#flash-due-count'))$('#flash-due-count').textContent=due;if($('#flash-errors-count'))$('#flash-errors-count').textContent=err;
+  if(dueBtn){dueBtn.disabled=!due;const g=dueBtn.querySelector('.flash-go');if(g)g.textContent=due?tr('start'):(store.lang==='en'?'UP TO DATE TODAY':'À JOUR AUJOURD’HUI')}
+  if(errBtn){errBtn.disabled=!err;const g=errBtn.querySelector('.flash-go');if(g)g.textContent=err?tr('start'):(store.lang==='en'?'NO OPEN ERRORS':'AUCUNE ERREUR À REPRENDRE')}
+  drawCourseContext();
 }
 function initV7Shell(){
   if($('#welcome-logo'))$('#welcome-logo').src=BRAND_ASSETS.logo;if($('#welcome-crest'))$('#welcome-crest').src=BRAND_ASSETS.crest;if($('#welcome-coach'))$('#welcome-coach').src=coachAsset('welcome');
@@ -1952,9 +1960,9 @@ drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-/* V7.7 · correctif navigation révisions + retour accueil + réglages */
+/* V7.8 · diagnostic profil + retour accueil + réglages */
 (function(){
-  HISTORYLAB_CONFIG.engineVersion=7.7;
+  HISTORYLAB_CONFIG.engineVersion=7.8;
   const brand=document.querySelector('.brand');
   if(brand){
     brand.classList.add('brand-home-link');
@@ -1981,7 +1989,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.7</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.8</div></section>';
     document.body.appendChild(o);
   }
 
