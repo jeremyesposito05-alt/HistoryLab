@@ -776,7 +776,7 @@ body.welcome-active>header,body.welcome-active>.wrap,body.welcome-active>.app-si
 .fiches-head-v7{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}.fiches-head-v7 h1{margin:0}.targeted-revision{margin:0 0 16px!important}.targeted-revision>summary{font-size:.91rem!important;min-height:52px!important}.targeted-revision .ask{margin-top:14px!important}.targeted-revision #p-serie{display:none!important}.targeted-revision .serie-hidden-label{display:none!important}
 
 /* Flash */
-.flash-hero{border-radius:24px;padding:21px;background:linear-gradient(135deg,var(--bs-navy),var(--bs-mid));color:#fff;margin-bottom:14px;position:relative;overflow:hidden}.flash-hero:after{content:"⚡";position:absolute;right:14px;top:2px;font-size:6.5rem;line-height:1;opacity:.08}.flash-hero .eyebrow{color:var(--bs-gold);opacity:1}.flash-hero h1{color:#fff;margin:5px 0 5px;font-size:2rem}.flash-hero p{margin:0;color:rgba(255,255,255,.78);font-size:.86rem;max-width:510px}.flash-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.flash-card{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:22px;padding:18px;min-height:190px;cursor:pointer;box-shadow:0 7px 25px rgba(0,38,84,.045);transition:.15s}.flash-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.flash-card:disabled{cursor:default;opacity:.58;transform:none}.flash-card .flash-ico{width:55px;height:55px;border-radius:18px;display:grid;place-items:center;background:var(--accent-s);color:var(--accent);font-size:1.45rem;margin-bottom:16px}.flash-card.error .flash-ico{background:#fff1eb;color:var(--bs-orange)}.flash-card b{display:block;font-size:1.04rem}.flash-card p{margin:5px 0 0;color:var(--ink2);font-size:.78rem;line-height:1.38;max-width:280px}.flash-count{position:absolute;right:14px;top:14px;border-radius:999px;padding:5px 8px;background:var(--bg);font-size:.68rem;font-weight:900;color:var(--ink2)}.flash-card .flash-go{position:absolute;bottom:16px;left:18px;font-size:.72rem;font-weight:900;color:var(--accent)}.flash-card.error .flash-go{color:var(--bs-orange)}
+.flash-hero{border-radius:24px;padding:21px;background:linear-gradient(135deg,var(--bs-navy),var(--bs-mid));color:#fff;margin-bottom:14px;position:relative;overflow:hidden}.flash-hero:after{content:"⚡";position:absolute;right:14px;top:2px;font-size:6.5rem;line-height:1;opacity:.08}.flash-hero .eyebrow{color:var(--bs-gold);opacity:1}.flash-hero h1{color:#fff;margin:5px 0 5px;font-size:2rem}.flash-hero p{margin:0;color:rgba(255,255,255,.78);font-size:.86rem;max-width:510px}.flash-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.flash-card{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:22px;padding:18px;min-height:190px;cursor:pointer;box-shadow:0 7px 25px rgba(0,38,84,.045);transition:.15s}.flash-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.flash-card:disabled{cursor:default;opacity:1;transform:none;box-shadow:none}.flash-card .flash-ico{width:55px;height:55px;border-radius:18px;display:grid;place-items:center;background:var(--accent-s);color:var(--accent);font-size:1.45rem;margin-bottom:16px}.flash-card.error .flash-ico{background:#fff1eb;color:var(--bs-orange)}.flash-card b{display:block;font-size:1.04rem}.flash-card p{margin:5px 0 0;color:var(--ink2);font-size:.78rem;line-height:1.38;max-width:280px}.flash-count{position:absolute;right:14px;top:14px;border-radius:999px;padding:5px 8px;background:var(--bg);font-size:.68rem;font-weight:900;color:var(--ink2)}.flash-card .flash-go{position:absolute;bottom:16px;left:18px;font-size:.72rem;font-weight:900;color:var(--accent)}.flash-card.error .flash-go{color:var(--bs-orange)}
 
 /* Exam hub */
 .exam-hub-head{margin-bottom:13px}.exam-hub-head h1{margin:0 0 4px}.exam-hub-head p{margin:0;color:var(--ink2);font-size:.87rem}.paper-hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.paper-hub-card{position:relative;border:1px solid var(--line);background:var(--card);border-radius:22px;padding:19px;min-height:188px;text-align:left;box-shadow:0 7px 24px rgba(0,38,84,.04)}button.paper-hub-card{cursor:pointer}.paper-hub-card.active{border-color:color-mix(in srgb,var(--bs-mid) 35%,var(--line));background:linear-gradient(145deg,#fff,#f6f9ff)}.paper-hub-card.disabled{opacity:.64}.paper-hub-card .paper-num{font-size:2.65rem;line-height:.9;font-weight:950;letter-spacing:-.08em;color:var(--bs-navy)}.paper-hub-card .paper-label{display:block;margin-top:14px;font-size:1.02rem;font-weight:900}.paper-hub-card p{font-size:.76rem;color:var(--ink2);line-height:1.38;margin:5px 0 0}.dev-badge{position:absolute;right:12px;top:12px;border-radius:999px;background:var(--bg);color:var(--ink3);padding:5px 8px;font-size:.62rem;font-weight:850}.paper-hub-card.active .dev-badge{background:var(--bs-gold);color:var(--bs-navy)}.paper2-back{border:0;background:transparent;color:var(--accent);font:inherit;font-size:.78rem;font-weight:850;padding:0;margin:0 0 10px;cursor:pointer}
@@ -1299,6 +1299,15 @@ function axisStats(a,target='all'){const its=DATA.items.filter(x=>x.a===a&&caseM
 function priorityAxis(target='all'){const arr=Object.keys(AXES).map(a=>axisStats(a,target)).filter(x=>x.its.length&&x.attempts);if(!arr.length)return null;const weak=arr.filter(x=>x.openErrors>0||x.accuracy<100);if(!weak.length)return null;return weak.sort((a,b)=>(b.openErrors-a.openErrors)||((a.accuracy??100)-(b.accuracy??100))||(b.wrong-a.wrong)||((100-a.pct)-(100-b.pct)))[0]}
 function countDue(target=currentTarget()){return DATA.items.filter(x=>caseMatch(x,target)).filter(x=>{const st=store.l[x.i];return st&&st.seen>0&&st.due<=today()}).length}
 function countErrors(target=currentTarget()){return DATA.items.filter(x=>caseMatch(x,target)&&(store.l[x.i]||{}).ko>0).length}
+function dailyQueue(target=currentTarget(),limit=10){
+  const eligible=DATA.items.filter(x=>caseMatch(x,target));
+  const due=eligible.filter(x=>{const st=store.l[x.i];return st&&st.seen>0&&st.due<=today()}).sort((a,b)=>((store.l[a.i]||{}).due||0)-((store.l[b.i]||{}).due||0));
+  const seen=new Set(due.map(x=>x.i));
+  const fresh=eligible.filter(x=>{const st=store.l[x.i];return (!st||!st.seen)&&!seen.has(x.i)});
+  return [...due,...fresh].slice(0,limit);
+}
+function countDaily(target=currentTarget()){return dailyQueue(target,10).length}
+function startDailyReview(){const q=dailyQueue(currentTarget(),10);if(q.length)launchQuizSet(q,'daily');else activateView('flash')}
 function resetRevision(){F.unite='all';F.pays=currentTarget();F.serie='alea';F.nb=10;F.corpus.clear();F.axe.clear()}
 const PROFILE_DIAGNOSTIC_IDS=['A1-02','B1-02','A2-09','B2-13','A3-15','B3-07','A4-16','B4-12','C1-03','C1-32','C2-07','C2-19','C3-04','C3-14','C4-04','C4-24'];
 function startProfileDiagnostic(){const q=PROFILE_DIAGNOSTIC_IDS.map(id=>DATA.items.find(x=>x.i===id)).filter(Boolean);if(q.length)launchQuizSet(shuffle(q),'profile')}
@@ -1316,7 +1325,7 @@ function drawCourseContext(){
 function drawHome(){
   const target=currentTarget(),its=DATA.items.filter(x=>caseMatch(x,target)),total=its.length,mastered=its.filter(x=>isMastered(store.l[x.i])).length,due=countDue(target),seen=its.filter(x=>(store.l[x.i]||{}).seen>0).length,st=streak();
   const coursePct=total?Math.round(mastered/total*100):0;
-  const pr=priorityAxis(target),scene=!seen?'welcome':due?'motivation':st>=3?'progress':'welcome',coach=$('#dashboard-coach');if(coach){coach.src=coachAsset(scene);coach.className='dashboard-coach coach-anim-'+coachAnim(scene)}
+  const pr=store.profileBuilt?priorityAxis(target):null,scene=!seen?'welcome':due?'motivation':st>=3?'progress':'welcome',coach=$('#dashboard-coach');if(coach){coach.src=coachAsset(scene);coach.className='dashboard-coach coach-anim-'+coachAnim(scene)}
   $('#dash-title').textContent=store.lang==='en'?'Your progress':'Où en es-tu ?';
   $('#dash-message').textContent=due?(store.lang==='en'?due+' questions are ready for today.':due+' '+(due>1?'questions sont prêtes':'question est prête')+' pour aujourd’hui.'):(seen?(store.lang==='en'?'Nothing is due right now. Keep the rhythm going.':'Rien n’est dû pour le moment. Garde le rythme avec une courte séance.'):(store.lang==='en'?'Start a first session to build your learning profile.':'Commence une première séance pour construire ton profil de révision.'));
   $('#dash-inline-stats').innerHTML='<span class="dash-pill"><b>'+mastered+'/'+total+'</b> '+(store.lang==='en'?'mastered':'maîtrisées')+'</span><span class="dash-pill"><b>'+due+'</b> '+(store.lang==='en'?'due':'à revoir')+'</span><span class="dash-pill"><b>'+st+'</b> '+(store.lang==='en'?'day streak':'jours de série')+'</span>';
@@ -1779,8 +1788,8 @@ function drawFiches(){
 
 /* ===================== Flash + generic shell ===================== */
 const UI={
-  fr:{navHome:'Accueil',navStudy:'Fiches',navExam:'Épreuve',navFlash:'Flash!',dashboardEyebrow:'TON HISTORYLAB',myCourses:'Mes cours',examHubTitle:'Épreuves',examHubSub:'Choisis le format que tu veux entraîner.',dev:'En développement',paper1Sub:'Analyse de sources et étude ciblée.',paper2Sub:'Entraînement guidé, conditions d’examen ou plan express.',paper3Sub:'Études régionales et dissertations approfondies.',allExams:'Toutes les épreuves',targetedRevision:'Révision ciblée',whichUnit:'Quelle partie du programme ?',howMany:'Combien de questions ?',targetPrecisely:'Cibler un corpus ou un facteur précis',factor:'Facteur ou moyen',startSession:'Commencer cette séance',flashTitle:'Réviser maintenant',flashSub:'Deux chemins rapides : ce qui est dû aujourd’hui, ou ce qui t’a déjà résisté.',dailyReview:'Révision du jour',dailyReviewSub:'Les questions dues, dans l’ordre du programme.',errorChallenge:'Défi erreurs',errorChallengeSub:'Reprends les questions qui t’ont résisté.',start:'COMMENCER →',welcomeKicker:'APPRENDRE · COMPRENDRE · PROGRESSER',welcomeQuote:'Une bonne copie ne récite pas l’Histoire. Elle l’explique.',welcomeStart:'Démarrer',welcomeCredit:'Une application pédagogique conçue par M. Esposito · Beau Soleil'},
-  en:{navHome:'Home',navStudy:'Study',navExam:'Exam',navFlash:'Flash!',dashboardEyebrow:'YOUR HISTORYLAB',myCourses:'My courses',examHubTitle:'Exams',examHubSub:'Choose the format you want to practise.',dev:'In development',paper1Sub:'Source analysis and prescribed study.',paper2Sub:'Guided practice, exam conditions or express planning.',paper3Sub:'Regional studies and extended essays.',allExams:'All exams',targetedRevision:'Targeted revision',whichUnit:'Which part of the course?',howMany:'How many questions?',targetPrecisely:'Target a specific topic or factor',factor:'Factor or method',startSession:'Start this session',flashTitle:'Revise now',flashSub:'Two quick routes: what is due today, or what has challenged you before.',dailyReview:'Today’s revision',dailyReviewSub:'Questions due today, in course order.',errorChallenge:'Error challenge',errorChallengeSub:'Retry the questions that have resisted you.',start:'START →',welcomeKicker:'LEARN · THINK · PROGRESS',welcomeQuote:'A strong answer does not recite history. It explains it.',welcomeStart:'Start',welcomeCredit:'A learning application designed by M. Esposito · Beau Soleil'}
+  fr:{navHome:'Accueil',navStudy:'Fiches',navExam:'Épreuve',navFlash:'Flash!',dashboardEyebrow:'TON HISTORYLAB',myCourses:'Mes cours',examHubTitle:'Épreuves',examHubSub:'Choisis le format que tu veux entraîner.',dev:'En développement',paper1Sub:'Analyse de sources et étude ciblée.',paper2Sub:'Entraînement guidé, conditions d’examen ou plan express.',paper3Sub:'Études régionales et dissertations approfondies.',allExams:'Toutes les épreuves',targetedRevision:'Révision ciblée',whichUnit:'Quelle partie du programme ?',howMany:'Combien de questions ?',targetPrecisely:'Cibler un corpus ou un facteur précis',factor:'Facteur ou moyen',startSession:'Commencer cette séance',flashTitle:'Réviser maintenant',flashSub:'Deux chemins rapides : ce qui est dû aujourd’hui, ou ce qui t’a déjà résisté.',dailyReview:'Révision du jour',dailyReviewSub:'D’abord les questions dues, puis de nouvelles questions dans l’ordre du programme.',errorChallenge:'Défi erreurs',errorChallengeSub:'Reprends les questions qui t’ont résisté.',start:'COMMENCER →',welcomeKicker:'APPRENDRE · COMPRENDRE · PROGRESSER',welcomeQuote:'Une bonne copie ne récite pas l’Histoire. Elle l’explique.',welcomeStart:'Démarrer',welcomeCredit:'Une application pédagogique conçue par M. Esposito · Beau Soleil'},
+  en:{navHome:'Home',navStudy:'Study',navExam:'Exam',navFlash:'Flash!',dashboardEyebrow:'YOUR HISTORYLAB',myCourses:'My courses',examHubTitle:'Exams',examHubSub:'Choose the format you want to practise.',dev:'In development',paper1Sub:'Source analysis and prescribed study.',paper2Sub:'Guided practice, exam conditions or express planning.',paper3Sub:'Regional studies and extended essays.',allExams:'All exams',targetedRevision:'Targeted revision',whichUnit:'Which part of the course?',howMany:'How many questions?',targetPrecisely:'Target a specific topic or factor',factor:'Factor or method',startSession:'Start this session',flashTitle:'Revise now',flashSub:'Two quick routes: what is due today, or what has challenged you before.',dailyReview:'Today’s revision',dailyReviewSub:'Due questions first, then new questions in course order.',errorChallenge:'Error challenge',errorChallengeSub:'Retry the questions that have resisted you.',start:'START →',welcomeKicker:'LEARN · THINK · PROGRESS',welcomeQuote:'A strong answer does not recite history. It explains it.',welcomeStart:'Start',welcomeCredit:'A learning application designed by M. Esposito · Beau Soleil'}
 };
 function tr(k){return (UI[store.lang]&&UI[store.lang][k])||UI.fr[k]||k}
 function applyLanguage(){
@@ -1793,9 +1802,18 @@ function applyLanguage(){
 }
 function setLanguage(lang){store.lang=lang==='en'?'en':'fr';save();applyLanguage();drawHome();drawFlash();drawCourseContext()}
 function drawFlash(){
-  const due=countDue(),err=countErrors(),dueBtn=$('#flash-due'),errBtn=$('#flash-errors');if($('#flash-due-count'))$('#flash-due-count').textContent=due;if($('#flash-errors-count'))$('#flash-errors-count').textContent=err;
-  if(dueBtn){dueBtn.disabled=!due;const g=dueBtn.querySelector('.flash-go');if(g)g.textContent=due?tr('start'):(store.lang==='en'?'UP TO DATE TODAY':'À JOUR AUJOURD’HUI')}
-  if(errBtn){errBtn.disabled=!err;const g=errBtn.querySelector('.flash-go');if(g)g.textContent=err?tr('start'):(store.lang==='en'?'NO OPEN ERRORS':'AUCUNE ERREUR À REPRENDRE')}
+  const daily=countDaily(),strictDue=countDue(),err=countErrors(),dueBtn=$('#flash-due'),errBtn=$('#flash-errors');
+  if($('#flash-due-count'))$('#flash-due-count').textContent=daily;
+  if($('#flash-errors-count'))$('#flash-errors-count').textContent=err;
+  if(dueBtn){
+    dueBtn.disabled=!daily;
+    const p=dueBtn.querySelector('p');if(p)p.textContent=store.lang==='en'?(strictDue?strictDue+' due first, then new questions in course order.':'No review is overdue. Continue with new questions in course order.'):(strictDue?strictDue+' à revoir en priorité, puis de nouvelles questions dans l’ordre du programme.':'Rien n’est en retard. Continue avec de nouvelles questions dans l’ordre du programme.');
+    const g=dueBtn.querySelector('.flash-go');if(g)g.textContent=daily?tr('start'):(store.lang==='en'?'UP TO DATE':'À JOUR');
+  }
+  if(errBtn){
+    errBtn.disabled=!err;
+    const g=errBtn.querySelector('.flash-go');if(g)g.textContent=err?tr('start'):(store.lang==='en'?'NO OPEN ERRORS':'AUCUNE ERREUR À REPRENDRE');
+  }
   drawCourseContext();
 }
 function initV7Shell(){
@@ -1803,7 +1821,7 @@ function initV7Shell(){
   $$('#welcome-lang [data-lang]').forEach(b=>b.onclick=()=>setLanguage(b.dataset.lang));
   if($('#welcome-start'))$('#welcome-start').onclick=()=>{markActiveDay();$('#welcome-screen').hidden=true;document.body.classList.remove('welcome-active');activateView('home')};
   if($('#paper2-open'))$('#paper2-open').onclick=openPaper2Setup;if($('#paper2-back'))$('#paper2-back').onclick=showExamHub;
-  if($('#flash-due'))$('#flash-due').onclick=()=>startPreset('due');if($('#flash-errors'))$('#flash-errors').onclick=()=>startPreset('errors');
+  if($('#flash-due'))$('#flash-due').onclick=()=>startDailyReview();if($('#flash-errors'))$('#flash-errors').onclick=()=>startPreset('errors');
   applyLanguage();drawHome();drawFlash();drawCourseContext();
 }
 window.addEventListener('DOMContentLoaded',initV7Shell);
@@ -1960,9 +1978,9 @@ drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-/* V7.8 · diagnostic profil + retour accueil + réglages */
+/* V7.10 · diagnostic profil + file quotidienne Flash + réglages */
 (function(){
-  HISTORYLAB_CONFIG.engineVersion=7.9;
+  HISTORYLAB_CONFIG.engineVersion=7.10;
   const brand=document.querySelector('.brand');
   if(brand){
     brand.classList.add('brand-home-link');
@@ -1989,7 +2007,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.9</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.10</div></section>';
     document.body.appendChild(o);
   }
 
