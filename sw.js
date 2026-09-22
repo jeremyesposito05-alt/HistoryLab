@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7.6-revision-navigation-fix';
+const CACHE = 'historylab-v7.7-revision-navigation-final';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
