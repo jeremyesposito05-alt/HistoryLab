@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="HistoryLab">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png?v=79">
 <style>
 :root{
   --bg:#f6f4ef; --card:#fffdfa; --ink:#23201d; --ink2:#6b655e; --ink3:#9a938a;
@@ -1962,7 +1962,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 }
 /* V7.8 · diagnostic profil + retour accueil + réglages */
 (function(){
-  HISTORYLAB_CONFIG.engineVersion=7.8;
+  HISTORYLAB_CONFIG.engineVersion=7.9;
   const brand=document.querySelector('.brand');
   if(brand){
     brand.classList.add('brand-home-link');
@@ -1989,7 +1989,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.8</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.9</div></section>';
     document.body.appendChild(o);
   }
 
