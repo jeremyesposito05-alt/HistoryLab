@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7.11-profile-flash-fix';
+const CACHE = 'historylab-v7.12-final-profile-icon';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
