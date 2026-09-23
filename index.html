@@ -1327,15 +1327,24 @@ function drawHome(){
   const coursePct=total?Math.round(mastered/total*100):0;
   const pr=store.profileBuilt?priorityAxis(target):null,scene=!seen?'welcome':due?'motivation':st>=3?'progress':'welcome',coach=$('#dashboard-coach');if(coach){coach.src=coachAsset(scene);coach.className='dashboard-coach coach-anim-'+coachAnim(scene)}
   $('#dash-title').textContent=store.lang==='en'?'Your progress':'Où en es-tu ?';
-  $('#dash-message').textContent=due?(store.lang==='en'?due+' questions are ready for today.':due+' '+(due>1?'questions sont prêtes':'question est prête')+' pour aujourd’hui.'):(seen?(store.lang==='en'?'Nothing is due right now. Keep the rhythm going.':'Rien n’est dû pour le moment. Garde le rythme avec une courte séance.'):(store.lang==='en'?'Start a first session to build your learning profile.':'Commence une première séance pour construire ton profil de révision.'));
+  $('#dash-message').textContent=due?(store.lang==='en'?due+' questions are ready for today.':due+' '+(due>1?'questions sont prêtes':'question est prête')+' pour aujourd’hui.'):(seen?(store.lang==='en'?'Nothing is overdue right now. Continue with the daily queue.':'Rien n’est en retard pour le moment. Continue avec la révision du jour.'):(store.lang==='en'?'Start the diagnostic to build your learning profile.':'Commence le diagnostic pour construire ton profil de révision.'));
   $('#dash-inline-stats').innerHTML='<span class="dash-pill"><b>'+mastered+'/'+total+'</b> '+(store.lang==='en'?'mastered':'maîtrisées')+'</span><span class="dash-pill"><b>'+due+'</b> '+(store.lang==='en'?'due':'à revoir')+'</span><span class="dash-pill"><b>'+st+'</b> '+(store.lang==='en'?'day streak':'jours de série')+'</span>';
-  if(pr){$('#dashboard-priority').innerHTML='<div class="priority-ico">★</div><div class="priority-main"><small>'+(store.lang==='en'?'Priority':'Priorité')+' · '+targetLabel()+'</small><b>'+esc(AXES[pr.a])+'</b><span>'+pr.mastered+'/'+pr.its.length+' '+(store.lang==='en'?'mastered':'maîtrisées')+(pr.wrong?' · '+pr.wrong+' '+(store.lang==='en'?'errors':'erreurs'):'')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Work on it':'Travailler')+'</button>';$('#dash-priority-go').onclick=()=>startPreset(pr.wrong?'errors':'quick',pr.a)}
-  else{$('#dashboard-priority').innerHTML='<div class="priority-ico">→</div><div class="priority-main"><small>'+(store.lang==='en'?'First goal':'Premier objectif')+'</small><b>'+(store.lang==='en'?'Build your learning profile':'Construire ton profil')+'</b><span>'+(store.lang==='en'?'16 diagnostic questions across Hitler, Mao, emergence and maintenance.':'16 questions diagnostiques, équilibrées entre Hitler, Mao, émergence et maintien.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Start diagnostic':'Lancer le diagnostic')+'</button>';$('#dash-priority-go').onclick=()=>startProfileDiagnostic()
+
+  if(!store.profileBuilt){
+    $('#dashboard-priority').innerHTML='<div class="priority-ico">→</div><div class="priority-main"><small>'+(store.lang==='en'?'First goal':'Premier objectif')+'</small><b>'+(store.lang==='en'?'Build your learning profile':'Construire ton profil')+'</b><span>'+(store.lang==='en'?'16 diagnostic questions across Hitler, Mao, emergence and maintenance.':'16 questions diagnostiques, équilibrées entre Hitler, Mao, émergence et maintien.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Start diagnostic':'Lancer le diagnostic')+'</button>';
+    $('#dash-priority-go').onclick=()=>startProfileDiagnostic();
+  }else if(pr){
+    $('#dashboard-priority').innerHTML='<div class="priority-ico">★</div><div class="priority-main"><small>'+(store.lang==='en'?'Priority':'Priorité')+' · '+targetLabel()+'</small><b>'+esc(AXES[pr.a])+'</b><span>'+pr.mastered+'/'+pr.its.length+' '+(store.lang==='en'?'mastered':'maîtrisées')+(pr.openErrors?' · '+pr.openErrors+' '+(store.lang==='en'?'open errors':'erreurs à reprendre'):'')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Work on it':'Travailler')+'</button>';
+    $('#dash-priority-go').onclick=()=>startPreset(pr.openErrors?'errors':'quick',pr.a);
+  }else{
+    $('#dashboard-priority').innerHTML='<div class="priority-ico">✓</div><div class="priority-main"><small>'+(store.lang==='en'?'Profile ready':'Profil construit')+'</small><b>'+(store.lang==='en'?'No clear weakness yet':'Aucune faiblesse nette pour le moment')+'</b><span>'+(store.lang==='en'?'Continue the daily queue so HistoryLab can refine your priorities.':'Continue la révision du jour pour que HistoryLab affine progressivement tes priorités.')+'</span></div><button class="btn sm priority-go" id="dash-priority-go">'+(store.lang==='en'?'Daily review':'Révision du jour')+'</button>';
+    $('#dash-priority-go').onclick=()=>startDailyReview();
+  }
+
   const u1=DATA.items.filter(x=>x.u==='U1'&&caseMatch(x,target)),u2=DATA.items.filter(x=>x.u==='U2'&&caseMatch(x,target)),p1=u1.length?Math.round(u1.filter(x=>isMastered(store.l[x.i])).length/u1.length*100):0,p2=u2.length?Math.round(u2.filter(x=>isMastered(store.l[x.i])).length/u2.length*100):0;
   $('#course-list').innerHTML='<div class="course-card-v7"><button type="button" class="course-card-head course-open-v71" id="course-open" aria-label="Ouvrir le cours"><div class="course-badge">2</div><div><h3>'+(store.lang==='en'?'Authoritarian regimes':'Régimes autoritaires')+'</h3><p>Hitler & Mao · Paper 2 · '+(store.lang==='en'?'2 units':'2 unités')+'</p></div><div class="course-pct"><b>'+coursePct+'%</b><small>'+targetLabel()+'</small></div></button><div class="course-progress"><i style="width:'+coursePct+'%"></i></div><div class="course-case-row"><span>'+(store.lang==='en'?'Study':'Je travaille')+'</span>'+caseSwitchHtml('home')+'</div><div class="course-card-actions"><button class="btn sec sm" id="course-fiches">'+(store.lang==='en'?'Study sheets':'Fiches')+'</button><button class="btn sm" id="course-flash">Flash!</button></div><div class="dash-inline-stats" style="margin-top:11px"><span class="dash-pill"><b>'+p1+'%</b> '+(store.lang==='en'?'Emergence':'Émergence')+'</span><span class="dash-pill"><b>'+p2+'%</b> '+(store.lang==='en'?'Maintenance':'Maintien')+'</span></div></div>';
   $('#course-count-label').textContent=store.lang==='en'?'1 course available':'1 cours disponible';wireCaseSwitches();if($('#course-open'))$('#course-open').onclick=()=>activateView('fic');$('#course-fiches').onclick=()=>activateView('fic');$('#course-flash').onclick=()=>activateView('flash');
 }
-
 
 /* ===================== sélection de révision ===================== */
 const F = {unite:'U1', pays:currentTarget(), serie:'alea', nb:20, corpus:new Set(), axe:new Set()};
@@ -1450,10 +1459,10 @@ function totals(filter){let n=0,ok=0;DATA.items.forEach(x=>{if(filter&&!filter(x
 $('#next').onclick=()=>{S.i++;S.i>=S.q.length?finish():render()};
 document.addEventListener('keydown',e=>{if($('#quiz').hidden||!$('#sheet').hidden)return;if(!S.answered&&e.key>='1'&&e.key<='4'){const b=$$('#opts .opt')[+e.key-1];if(b)b.click()}else if(S.answered&&(e.key==='Enter'||e.key===' ')){e.preventDefault();$('#next').click()}});
 function finish(){
-  const total=S.i+(S.answered?1:0),mins=Math.max(1,Math.round((Date.now()-S.t0)/60000)),pct=total?Math.round(S.ok/total*100):0;if(S.kind==='profile'&&total){store.profileBuilt=true;save()}$('#quiz').hidden=true;$('#done').hidden=false;
+  const total=S.i+(S.answered?1:0),mins=Math.max(1,Math.round((Date.now()-S.t0)/60000)),pct=total?Math.round(S.ok/total*100):0,profileComplete=S.kind==='profile'&&total===S.q.length;if(profileComplete){store.profileBuilt=true;save()}$('#quiz').hidden=true;$('#done').hidden=false;
   const wrongAxes=[...new Set(S.wrong.map(x=>x.a))],goodAxes=[...new Set(S.q.filter(x=>!S.wrong.some(w=>w.i===x.i)).map(x=>x.a))].filter(a=>!wrongAxes.includes(a));
   const scene=pct===100?'perfect':pct>=80?'high':pct>=50?'medium':'low';
-  let h=duoStage(scene)+ '<div class="result-hero"><div class="result-score">'+S.ok+' / '+total+'</div><div class="result-pct">'+pct+' % de réponses justes · '+plur(mins,'minute')+'</div>'+(S.masteredGain?'<div class="result-gain">+'+S.masteredGain+' '+(S.masteredGain>1?'questions maîtrisées':'question maîtrisée')+'</div>':'')+'</div>';if(S.kind==='profile')h+='<div class="card"><h2>Ton profil initial est construit</h2><p class="small muted">HistoryLab peut maintenant identifier tes priorités. Les réponses fausses passent immédiatement dans Défi erreurs et sont dues aujourd’hui. Les réponses justes seront reproposées demain, puis espacées selon tes réussites.</p></div>';
+  let h=duoStage(scene)+ '<div class="result-hero"><div class="result-score">'+S.ok+' / '+total+'</div><div class="result-pct">'+pct+' % de réponses justes · '+plur(mins,'minute')+'</div>'+(S.masteredGain?'<div class="result-gain">+'+S.masteredGain+' '+(S.masteredGain>1?'questions maîtrisées':'question maîtrisée')+'</div>':'')+'</div>';if(S.kind==='profile')h+=profileComplete?'<div class="card"><h2>Ton profil initial est construit</h2><p class="small muted">HistoryLab peut maintenant identifier tes priorités. Les réponses fausses passent immédiatement dans Défi erreurs et restent dues aujourd’hui. Une réponse juste est reproposée demain, puis après 3, 7, 14 et 30 jours si tu continues à réussir.</p></div>':'<div class="card"><h2>Diagnostic interrompu</h2><p class="small muted">Ton profil n’est pas encore considéré comme construit. Relance le diagnostic depuis l’Accueil pour terminer les 16 questions.</p></div>';
   h+='<div class="result-grid">';
   h+='<div class="card"><h2>Solide</h2>'+(goodAxes.length?goodAxes.slice(0,4).map(a=>'<span class="result-chip">'+esc(AXES[a])+'</span>').join(''):'<p class="small muted">La série était exigeante. Continue, la répétition fera la différence.</p>')+'</div>';
   h+='<div class="card"><h2>À retravailler</h2>'+(wrongAxes.length?wrongAxes.map(a=>'<span class="result-chip">'+esc(AXES[a])+'</span>').join(''):'<p class="small muted">Aucune erreur sur cette série.</p>')+'</div></div>';
@@ -1812,6 +1821,7 @@ function drawFlash(){
   }
   if(errBtn){
     errBtn.disabled=!err;
+    const p=errBtn.querySelector('p');if(p)p.textContent=err?(store.lang==='en'?'Retry questions that are still unresolved.':'Reprends les questions encore non corrigées.'):(store.lang==='en'?'It activates as soon as you get a question wrong.':'Il s’active dès qu’une réponse est fausse.');
     const g=errBtn.querySelector('.flash-go');if(g)g.textContent=err?tr('start'):(store.lang==='en'?'NO OPEN ERRORS':'AUCUNE ERREUR À REPRENDRE');
   }
   drawCourseContext();
@@ -1978,9 +1988,9 @@ drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-/* V7.10 · diagnostic profil + file quotidienne Flash + réglages */
+/* V7.11 · diagnostic profil + file quotidienne Flash + réglages */
 (function(){
-  HISTORYLAB_CONFIG.engineVersion=7.10;
+  HISTORYLAB_CONFIG.engineVersion=7.11;
   const brand=document.querySelector('.brand');
   if(brand){
     brand.classList.add('brand-home-link');
@@ -2007,7 +2017,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.10</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-version">HistoryLab · V7.11</div></section>';
     document.body.appendChild(o);
   }
 
