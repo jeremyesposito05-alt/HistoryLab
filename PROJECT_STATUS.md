@@ -205,11 +205,18 @@ Nom installé :
 - `short_name` : `HistoryLab` ;
 - titre iOS : `HistoryLab`.
 
-La V7.12 a installé les deux fichiers d'icône finaux actuellement présents sur `main`.
+La V7.12 a installé deux fichiers d'icône actuellement présents sur `main`, mais cette proposition n'est pas validée et ne doit pas être considérée comme l'identité finale.
 
-L'icône ne contient pas le mot HistoryLab dans le visuel. Le nom de l'application est géré par le manifeste et le titre iOS.
+Spécification validée pour la prochaine icône :
 
-Les icônes actuelles doivent rester la référence tant qu'une nouvelle modification graphique n'est pas explicitement demandée.
+- fond Dark Navy Beau Soleil ;
+- montagnes alpines discrètes en arrière-plan, dans l'esprit de la première proposition ;
+- grand H blanc ;
+- aucune colonne ;
+- aucun liseré doré autour du H ;
+- aucun mot `HistoryLab` intégré dans l'image, puisque le nom apparaît sous l'icône sur iPhone.
+
+Les fichiers `icon-192.png` et `icon-512.png` devront être remplacés uniquement après génération et validation de cette nouvelle icône.
 
 ## Bugs et incohérences corrigés
 
@@ -223,7 +230,7 @@ Les icônes actuelles doivent rester la référence tant qu'une nouvelle modific
 - ajout et consolidation du diagnostic initial ;
 - clarification progressive des états Flash! ;
 - nom d'application HistoryLab ;
-- identité iPhone et icône finale ;
+- identité iPhone et tentative d'icône, non validée comme version finale ;
 - corrections successives du diagnostic et de sa navigation.
 
 ### V7.13
@@ -240,9 +247,14 @@ Les icônes actuelles doivent rester la référence tant qu'une nouvelle modific
 
 ## Travaux restant à envisager
 
-Les priorités signalées dans l'audit V7.7 sont désormais traitées sur `main`.
+Les correctifs « profil initial + logique Flash de démarrage » sont désormais publiés sur `main` en V7.13.
 
-Restent des travaux de produit plus larges :
+Reste en priorité immédiate :
+
+- générer puis valider la nouvelle icône iPhone selon la spécification ci-dessus ;
+- seulement après validation, remplacer `icon-192.png` et `icon-512.png` et incrémenter de nouveau le cache PWA.
+
+Restent ensuite des travaux de produit plus larges :
 
 - mettre à jour `README.md`, encore basé sur V7.1 ;
 - produire et auditer le pack pédagogique anglais, l'interface est bilingue mais le contenu Hitler et Mao reste principalement en français ;
