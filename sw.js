@@ -1,4 +1,4 @@
-const CACHE = 'historylab-v7.13-strict-spaced-review';
+const CACHE = 'historylab-v7.14-approved-icon';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
