@@ -4,7 +4,7 @@
 
 Dépôt : `jeremyesposito05-alt/HistoryLab`  
 Branche : `main`  
-Version applicative actuelle : **V7.13**  
+Version applicative actuelle : **V7.14**  
 Dernière base auditée avant V7.13 : **V7.12**
 
 Le dépôt GitHub, et en particulier la branche `main`, est la source technique de vérité. Le README historique n'est pas suffisant pour déterminer l'état réel de l'application, car il est resté sur une description V7.1.
@@ -17,7 +17,7 @@ Fichiers principaux :
 
 - `index.html` : application principale. Interface, données pédagogiques, moteur de quiz, progression, répétition espacée, Paper 2, fiches, glossaire, diagnostic et réglages.
 - `manifest.webmanifest` : identité PWA. Nom et nom court : `HistoryLab`.
-- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.13-strict-spaced-review`.
+- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.14-approved-icon`.
 - `icon-192.png` et `icon-512.png` : icônes de l'application.
 - `README.md` : documentation historique partielle, actuellement ancienne.
 - `PROJECT_STATUS.md` : présent document de continuité technique et pédagogique.
@@ -205,18 +205,18 @@ Nom installé :
 - `short_name` : `HistoryLab` ;
 - titre iOS : `HistoryLab`.
 
-La V7.12 a installé deux fichiers d'icône actuellement présents sur `main`, mais cette proposition n'est pas validée et ne doit pas être considérée comme l'identité finale.
+La V7.14 installe l'icône validée de HistoryLab sur `main`.
 
-Spécification validée pour la prochaine icône :
+Identité de l'icône actuelle :
 
 - fond Dark Navy Beau Soleil ;
-- montagnes alpines discrètes en arrière-plan, dans l'esprit de la première proposition ;
+- montagnes alpines en arrière-plan ;
 - grand H blanc ;
 - aucune colonne ;
-- aucun liseré doré autour du H ;
-- aucun mot `HistoryLab` intégré dans l'image, puisque le nom apparaît sous l'icône sur iPhone.
+- aucun liseré autour du H ;
+- `History` en blanc et `Lab` en doré sous le H.
 
-Les fichiers `icon-192.png` et `icon-512.png` devront être remplacés uniquement après génération et validation de cette nouvelle icône.
+Les fichiers `icon-192.png` et `icon-512.png` correspondent désormais à cette identité validée.
 
 ## Bugs et incohérences corrigés
 
@@ -245,14 +245,18 @@ Les fichiers `icon-192.png` et `icon-512.png` devront être remplacés uniquemen
 - priorité initiale plus explicite dans le bilan du diagnostic ;
 - cache PWA incrémenté pour distribuer les corrections.
 
+### V7.14
+
+- installation de l'icône HistoryLab validée ;
+- génération des versions 192 × 192 et 512 × 512 ;
+- identité visuelle : montagnes alpines, grand H blanc, `History` blanc et `Lab` doré ;
+- incrément du cache PWA et de la référence Apple Touch Icon.
+
 ## Travaux restant à envisager
 
-Les correctifs « profil initial + logique Flash de démarrage » sont désormais publiés sur `main` en V7.13.
+Les correctifs « profil initial + logique Flash de démarrage » sont publiés sur `main` depuis V7.13. L'icône iPhone validée est installée en V7.14.
 
-Reste en priorité immédiate :
-
-- générer puis valider la nouvelle icône iPhone selon la spécification ci-dessus ;
-- seulement après validation, remplacer `icon-192.png` et `icon-512.png` et incrémenter de nouveau le cache PWA.
+Priorité produit suivante : faire évoluer « Construire ton profil » vers un onboarding d'apprentissage qui combine les habitudes et l'organisation déclarées par l'élève avec le diagnostic objectif de connaissances.
 
 Restent ensuite des travaux de produit plus larges :
 
