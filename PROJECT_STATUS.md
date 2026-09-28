@@ -4,8 +4,8 @@
 
 Dépôt : `jeremyesposito05-alt/HistoryLab`  
 Branche : `main`  
-Version applicative actuelle : **V7.14**  
-Dernière base auditée avant V7.13 : **V7.12**
+Version applicative actuelle : **V7.15**  
+Dernière base auditée : **V7.14** (audit complet du contenu et du code le 28 septembre 2026)
 
 Le dépôt GitHub, et en particulier la branche `main`, est la source technique de vérité. Le README historique n'est pas suffisant pour déterminer l'état réel de l'application, car il est resté sur une description V7.1.
 
@@ -17,7 +17,7 @@ Fichiers principaux :
 
 - `index.html` : application principale. Interface, données pédagogiques, moteur de quiz, progression, répétition espacée, Paper 2, fiches, glossaire, diagnostic et réglages.
 - `manifest.webmanifest` : identité PWA. Nom et nom court : `HistoryLab`.
-- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.14-approved-icon`.
+- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.15-audit-contenu`.
 - `icon-192.png` et `icon-512.png` : icônes de l'application.
 - `README.md` : documentation historique partielle, actuellement ancienne.
 - `PROJECT_STATUS.md` : présent document de continuité technique et pédagogique.
@@ -193,7 +193,7 @@ Depuis V7.13, une bonne réponse ferme complètement l'erreur ouverte de la ques
 
 Identité principale :
 
-- Dark Navy Beau Soleil : `#002654` ;
+- Dark Navy Beau Soleil : `#1A2047` (valeur des SVG officiels ; le `#002654` imprimé dans le PDF de la charte est faux, comme trois autres codes : Mid Blue `#14387F`, Gold `#F3BE31`, Warm Grey `#9C9895`) ;
 - surfaces claires ;
 - accents Beau Soleil ;
 - interface responsive mobile et desktop ;
@@ -251,6 +251,31 @@ Les fichiers `icon-192.png` et `icon-512.png` correspondent désormais à cette 
 - génération des versions 192 × 192 et 512 × 512 ;
 - identité visuelle : montagnes alpines, grand H blanc, `History` blanc et `Lab` doré ;
 - incrément du cache PWA et de la référence Apple Touch Icon.
+
+### V7.15
+
+Audit complet du contenu contre le cours (unités 1.1 et 1.2) et du code.
+
+Données pédagogiques :
+
+- les 317 questions historiques repartent de la version auditée V6.5, dont les corrections n'avaient jamais été reportées dans la branche V7 (elle était partie des données V6.4) ;
+- 257 questions retravaillées pour supprimer les indices qui trahissaient la bonne réponse : la bonne réponse était la plus longue dans 67,7 % des cas (hasard : 25 %), elle ne l'est plus que dans 23,7 % ; rangs de longueur 24 / 26 / 26 / 24 % ; plus aucun jeu d'options où seuls les distracteurs portent un mot absolu, ni où seule la bonne réponse est entre guillemets ;
+- les 8 questions comparatives `CMP-*` rééquilibrées (la bonne réponse était la plus longue dans les 8) ;
+- erreurs de fond corrigées : distracteurs qui étaient eux aussi justes (A2-05, A3-04, A4-01, C2-14, C3-34…), fausses citations (B1-06, C2-08), contresens (B2-13), commentaire tronqué (B1-08), question fondée sur une prémisse fausse (C2-04, Oranienburg), commentaire niant qu'une citation figure au dossier (C3-02), « trois fois » corrigé en « deux fois et demie » (C5-08), types de question erronés (C3-26, C4-29) ;
+- les 71 citations nouvelles ou modifiées ont été vérifiées mot pour mot dans le texte du cours ;
+- corrigé du sujet « Le recours à la force » : partie (a) reformulée pour rester sur la force ; glossaire : deux définitions contradictoires de « fanshen » harmonisées.
+
+Code :
+
+- **diagnostic initial jamais validé** : le total de fin de série comptait une question de trop (3 questions affichaient « 1 / 4 »), si bien que les 16 questions du diagnostic donnaient 17 et que `profileBuilt` ne passait jamais à vrai — Flash! restait bloqué « après le diagnostic ». Corrigé ;
+- raccourcis clavier du quiz (1 à 4, Entrée, Espace) neutralisés hors de la révision et dans les zones de saisie : ils répondaient au quiz en arrière-plan et bloquaient la barre d'espace pendant la rédaction du Paper 2 ;
+- témoin de sauvegarde honnête : un échec d'écriture (stockage plein, navigation privée) affiche un avertissement au lieu de « Sauvegardé » ; sauvegarde du brouillon différée de 0,8 s au lieu de chaque frappe ;
+- l'écran de progression (statistiques par axe, rapport Teams, export, import, remise à zéro) n'était accessible par aucun bouton depuis V7 : il s'ouvre désormais depuis Réglages → « Ma progression et mes données » ;
+- nouvel onglet de fiches « À savoir par cœur » : les 20 formules et jugements de `DATA.fiche`, jamais affichés jusque-là, avec un mode d'auto-test ;
+- « Tout effacer » interrompt aussi l'épreuve et le quiz en cours, et conserve la langue ;
+- navigation au clavier des onglets (flèches, `aria-controls`, `tabpanel`) ; texte des bulles du coach en alternative textuelle ;
+- charte Beau Soleil : toutes les couleurs ramenées sur la palette officielle (261 codes), Calibri pour le texte, SangBleu OG Sans sans faux gras pour les titres, bouton gold remplacé par un bouton bleu à filet gold, manifeste en `#1A2047` ;
+- code mort retiré (`charAsset`, `soloReaction`, `bars`) ; `esc()` échappe aussi l'apostrophe droite.
 
 ## Travaux restant à envisager
 
