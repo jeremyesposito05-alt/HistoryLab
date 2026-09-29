@@ -4,7 +4,7 @@
 
 Dépôt : `jeremyesposito05-alt/HistoryLab`  
 Branche : `main`  
-Version applicative actuelle : **V7.15**  
+Version applicative actuelle : **V7.16**  
 Dernière base auditée : **V7.14** (audit complet du contenu et du code le 28 septembre 2026)
 
 Le dépôt GitHub, et en particulier la branche `main`, est la source technique de vérité. Le README historique n'est pas suffisant pour déterminer l'état réel de l'application, car il est resté sur une description V7.1.
@@ -17,8 +17,10 @@ Fichiers principaux :
 
 - `index.html` : application principale. Interface, données pédagogiques, moteur de quiz, progression, répétition espacée, Paper 2, fiches, glossaire, diagnostic et réglages.
 - `manifest.webmanifest` : identité PWA. Nom et nom court : `HistoryLab`.
-- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.15-audit-contenu`.
+- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.16-coach`. Les 14 illustrations du coach (`coach/coach_*.webp`) sont mises en cache dès l’installation.
 - `icon-192.png` et `icon-512.png` : icônes de l'application.
+- `coach/` : les 14 poses du coach, WebP transparents 750 × 900 (49 à 79 Ko).
+- Sauvegardes : chaque version publiée précédente est étiquetée `sauvegarde-vX.Y` dans le dépôt.
 - `README.md` : documentation historique partielle, actuellement ancienne.
 - `PROJECT_STATUS.md` : présent document de continuité technique et pédagogique.
 
@@ -251,6 +253,17 @@ Les fichiers `icon-192.png` et `icon-512.png` correspondent désormais à cette 
 - génération des versions 192 × 192 et 512 × 512 ;
 - identité visuelle : montagnes alpines, grand H blanc, `History` blanc et `Lab` doré ;
 - incrément du cache PWA et de la référence Apple Touch Icon.
+
+### V7.16
+
+Refonte du coach, d'après l'audit (retour centré sur la tâche, apparitions limitées aux moments clés).
+
+- **14 poses**, dont 6 nouvelles (fiches à la loupe, chrono, célébration, série, café, plan au tableau). Les 8 anciennes ont été retouchées à partir des originaux : bulles et textes incrustés retirés, logo de marque retiré de l'ordinateur. Images séparées du HTML : `index.html` passe de 1,85 Mo à 0,72 Mo.
+- **Bulles écrites par l'application**, en français ou en anglais selon la langue choisie : 26 moments, 2 à 4 formulations chacun, sans répétition immédiate. Messages centrés sur la tâche et la stratégie ; humour sur le travail et sur le coach, jamais sur les régimes, leurs acteurs ou leurs victimes.
+- **Apparitions dans le quiz limitées aux moments clés** : question maîtrisée (avec confettis), séries de 3, 5 et 10 bonnes réponses, première erreur de la séance, question qui piège une deuxième fois (renvoi au document du cours). Les autres réponses n'affichent que la correction.
+- **Tableau de bord** : pose et bulle selon la situation (diagnostic à faire, retour après 3 jours ou plus avec la pose café, série de jours, révisions dues, planning à jour).
+- **Épreuve** : pose et conseil différents selon le mode (étape par étape, jour J avec le chrono, plan express au tableau) ; bilan de copie selon l'auto-évaluation.
+- Légère respiration du coach au repos, bulle animée, confettis ; tout est désactivé si l'appareil demande de réduire les animations. Texte alternatif de chaque pose en français et en anglais.
 
 ### V7.15
 

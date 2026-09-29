@@ -1,5 +1,6 @@
-const CACHE = 'historylab-v7.15-audit-contenu';
-const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'historylab-v7.16-coach';
+const COACH = ['welcome','bravo','progress','impressed','reflection','attention','motivation','exam','study','timer','celebrate','streak','coffee','plan'].map(k => './coach/coach_' + k + '.webp');
+const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', ...COACH];
 
 self.addEventListener('install', event => {
   event.waitUntil(
