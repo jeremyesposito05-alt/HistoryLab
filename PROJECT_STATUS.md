@@ -4,7 +4,7 @@
 
 Dépôt : `jeremyesposito05-alt/HistoryLab`  
 Branche : `main`  
-Version applicative actuelle : **V7.16**  
+Version applicative actuelle : **V7.17**  
 Dernière base auditée : **V7.14** (audit complet du contenu et du code le 28 septembre 2026)
 
 Le dépôt GitHub, et en particulier la branche `main`, est la source technique de vérité. Le README historique n'est pas suffisant pour déterminer l'état réel de l'application, car il est resté sur une description V7.1.
@@ -17,7 +17,7 @@ Fichiers principaux :
 
 - `index.html` : application principale. Interface, données pédagogiques, moteur de quiz, progression, répétition espacée, Paper 2, fiches, glossaire, diagnostic et réglages.
 - `manifest.webmanifest` : identité PWA. Nom et nom court : `HistoryLab`.
-- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.16-coach`. Les 14 illustrations du coach (`coach/coach_*.webp`) sont mises en cache dès l’installation.
+- `sw.js` : service worker et cache hors ligne. Cache actuel : `historylab-v7.17-profil`. Les 14 illustrations du coach (`coach/coach_*.webp`) sont mises en cache dès l’installation.
 - `icon-192.png` et `icon-512.png` : icônes de l'application.
 - `coach/` : les 14 poses du coach, WebP transparents 750 × 900 (49 à 79 Ko).
 - Sauvegardes : chaque version publiée précédente est étiquetée `sauvegarde-vX.Y` dans le dépôt.
@@ -253,6 +253,16 @@ Les fichiers `icon-192.png` et `icon-512.png` correspondent désormais à cette 
 - génération des versions 192 × 192 et 512 × 512 ;
 - identité visuelle : montagnes alpines, grand H blanc, `History` blanc et `Lab` doré ;
 - incrément du cache PWA et de la référence Apple Touch Icon.
+
+### V7.17
+
+Profil de l'apprenant en trois temps, avancement de la classe, bibliothèque « Références et ressources ».
+
+- **Avancement du cours** : l'élève saisit un code donné par le professeur (`HL-XXXX-X`, masque des 18 corpus avec clé de contrôle, sans aucune donnée d'élève) ou coche lui-même « déjà vu en classe ». Le professeur produit le code dans Réglages → Références et ressources → Espace professeur. La révision au hasard et le diagnostic ne portent plus que sur les corpus vus ; une fiche choisie volontairement reste accessible en entier.
+- **Profil en trois temps**, qui remplace le diagnostic fixe de 16 questions : (1) *Comment tu apprends* — stratégies de révision, moment des révisions, minutes disponibles, sentiment de compétence pour la partie (b), difficulté principale, objectif de janvier ; (2) *Où tu en es* — 12 questions tirées des corpus vus, chacune suivie de « Sûr / J'hésite / Je devine », puis 2 ou 3 questions « découverte » sur le chapitre suivant, sans erreur enregistrée ; (3) *Ton bilan* — carte, lucidité (calibration), méthode, plan. Pas de « style d'apprentissage ».
+- **Adaptations** : quota de la révision du jour selon le temps annoncé (6, 10 ou 20 questions) ; erreurs commises avec assurance en tête du Défi erreurs (effet d'hypercorrection) ; conseils du coach sur la méthode si l'élève relit ou surligne ; première fiche conseillée selon le point faible.
+- **Références et ressources** : 12 choix pédagogiques de l'application, chacun avec ce qu'il change, pourquoi, les références complètes, leur solidité (méta-analyse, expériences contrôlées, guide officiel…) et leurs limites. Accessible depuis Réglages et depuis le bilan du profil. Français et anglais.
+- Réglages : « Mon profil », « Où en est ma classe », « Références et ressources ».
 
 ### V7.16
 

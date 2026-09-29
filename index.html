@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="HistoryLab">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-192.png?v=716">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-192.png?v=717">
 <style>
 :root{
   --bg:#F0EFEE; --card:#FFFFFF; --ink:#1A2047; --ink2:#2E3945; --ink3:#9C9895;
@@ -1034,6 +1034,39 @@ input,select{font-size:16px}
   .coach-card.mini .coach-bubble:before{top:auto;bottom:-11px;transform:rotate(-45deg)}
 }
 @media(prefers-reduced-motion:reduce){.coach-card .coach-breathe,.coach-bubble,.dash-bubble{animation:none!important}.coach-confetti{display:none}}
+/* ====================================================================
+   V7.17 · profil en trois temps, avancement de la classe, références
+   ==================================================================== */
+.prof-steps{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 14px}
+.prof-steps span{flex:1 1 150px;text-align:center;padding:8px 10px;border-radius:999px;background:var(--bs-navy-tint);color:var(--bs-dark);font-size:.82rem;font-weight:700}
+.prof-steps span.on{background:var(--bs-mid);color:#FFFFFF;box-shadow:inset 0 -3px 0 var(--bs-gold)}
+.prof-q{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin:12px 0}
+.prof-q h3{margin:0 0 6px;font-size:1.02rem;color:var(--bs-navy)}
+.prof-q .pills{margin-top:8px}
+.prof-code{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 12px}
+.prof-code input{font-size:16px;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;width:150px;text-transform:uppercase;letter-spacing:.08em}
+.prof-corpus{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prof-unit{display:flex;flex-direction:column;gap:4px}
+.prof-unit b{font-size:.86rem;color:var(--bs-mid);margin-bottom:2px}
+.prof-chk{display:flex;gap:8px;align-items:center;font-size:.9rem;padding:4px 0;cursor:pointer}
+.prof-chk input{width:18px;height:18px;accent-color:var(--bs-mid)}
+.prof-card h2{font-size:1.2rem;margin:0 0 8px}
+.prof-card ul{margin:6px 0 0;padding-left:20px}
+.fb.cert{background:var(--bs-blue-tint);border:1px solid var(--line)}
+.cert-box b{display:block;color:var(--bs-navy);margin-bottom:10px}
+.opt[data-s="pick"]{border-color:var(--bs-mid);background:var(--bs-navy-tint)}
+.ref-head{margin-bottom:14px}.ref-head h1{margin:0 0 6px}
+.ref-item{margin:10px 0;padding:14px 18px}
+.ref-item>summary{cursor:pointer;font-size:1.02rem;color:var(--bs-navy);list-style:none}
+.ref-item>summary::-webkit-details-marker{display:none}
+.ref-item>summary:before{content:"＋ ";color:var(--bs-bright)}
+.ref-item[open]>summary:before{content:"－ "}
+.ref-src{border-left:3px solid var(--bs-gold);background:var(--bs-grey-tint);border-radius:0 10px 10px 0;padding:8px 12px;margin:8px 0}
+.ref-cite{font-size:.9rem;color:var(--bs-dark)}
+.ref-legit{font-size:.82rem;color:var(--bs-dark);margin-top:4px}
+.ref-legit span{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFFFFF;background:var(--bs-mid);border-radius:999px;padding:1px 8px;margin-right:4px}
+.teacher-code{font-size:1.05rem;margin:14px 0 8px}.teacher-code b{font-family:Consolas,monospace;font-size:1.3rem;letter-spacing:.08em;color:var(--bs-mid)}
+@media(max-width:600px){.prof-corpus{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="welcome-active">
@@ -1213,6 +1246,8 @@ input,select{font-size:16px}
   <div class="flash-starter" id="flash-starter" hidden></div>
 </section>
 <section id="v-pro" hidden aria-hidden="true"><div id="probody"></div></section>
+<section id="v-profile" hidden><div id="profbody"></div></section>
+<section id="v-ref" hidden><div id="refbody"></div></section>
 
 </div>
 
@@ -1257,7 +1292,7 @@ const CORPUS = {
 };
 const BOXDAYS = [0, 1, 3, 7, 14, 30];
 const MASTERY_BOX = 3;
-const DAILY_REVIEW_LIMIT = 10;
+let DAILY_REVIEW_LIMIT = 10;
 
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -2233,6 +2268,255 @@ drawChoix();drawEpr();drawCopies();drawHome();drawFlash();
   });
 })();
 
+
+/* ==================== V7.17 · avancement du cours, profil en trois temps, références ==================== */
+(function(){
+  HISTORYLAB_CONFIG.engineVersion=7.17;
+  const L=(fr,en)=>store.lang==='en'?en:fr;
+  const CORPUS_ORDER=['D0','A0','A1','A2','A3','A4','A5','B0','B1','B2','B3','B4','C0','C1','C2','C3','C4','C5'];
+  const CORPUS_EN={D0:'Defining and situating',A0:'A0 · Context',A1:'A1 · Ideas',A2:'A2 · Economy',A3:'A3 · Conflicts',A4:'A4 · Society',A5:'A5 · January 1933',B0:'B0 · Context',B1:'B1 · Ideas',B2:'B2 · Economy',B3:'B3 · Conflicts',B4:'B4 · Society',C0:'C0 · Key dates',C1:'C1 · Law',C2:'C2 · Force',C3:'C3 · Propaganda',C4:'C4 · Support',C5:'C5 · Exam'};
+  const corpusLabel=c=>store.lang==='en'?(CORPUS_EN[c]||c):(CORPUS[c]||c);
+  const AXIS_FICHE={idees:'idees',economie:'eco',conflits:'conflits',social:'social',contexte:'contextes',droit:'droit',force:'force',propagande:'propagande',soutien:'soutien',methode:'c5'};
+
+  /* ---------- magasin ---------- */
+  const oldNorm=normalizeStore;
+  normalizeStore=function(s){s=oldNorm(s);
+    s.progress=s.progress&&typeof s.progress==='object'?s.progress:{};
+    s.progress.code=typeof s.progress.code==='string'?s.progress.code:'';
+    s.progress.manual=Array.isArray(s.progress.manual)?s.progress.manual.filter(c=>CORPUS_ORDER.includes(c)):[];
+    s.profile=s.profile&&typeof s.profile==='object'?s.profile:null;return s};
+  store=normalizeStore(store);save();
+
+  /* ---------- code professeur : 18 corpus → masque de bits en base 36 + clé de contrôle ---------- */
+  function encodeCode(list){let m=0;CORPUS_ORDER.forEach((c,i)=>{if(list.includes(c))m|=(1<<i)});const b=m.toString(36).toUpperCase().padStart(4,'0'),k=(b.split('').reduce((a,ch)=>a+parseInt(ch,36),0)%36).toString(36).toUpperCase();return 'HL-'+b+'-'+k}
+  function decodeCode(code){const m=String(code||'').trim().toUpperCase().match(/^HL-([0-9A-Z]{3,5})-([0-9A-Z])$/);if(!m)return null;const k=(m[1].split('').reduce((a,ch)=>a+parseInt(ch,36),0)%36).toString(36).toUpperCase();if(k!==m[2])return null;const n=parseInt(m[1],36);return CORPUS_ORDER.filter((c,i)=>n&(1<<i))}
+  function covered(){const fromCode=decodeCode(store.progress.code)||[];const set=new Set([...fromCode,...store.progress.manual]);return set.size?CORPUS_ORDER.filter(c=>set.has(c)):null}
+  window.hlCovered=covered;
+
+  /* ---------- quota quotidien selon le temps annoncé ---------- */
+  function applyDailyLimit(){const m=store.profile&&store.profile.habits&&store.profile.habits.minutes;DAILY_REVIEW_LIMIT=m===5?6:m===20?20:10}
+  applyDailyLimit();
+
+  /* ---------- révision au hasard : seulement ce qui a été vu en classe ---------- */
+  const oldMatch=match;
+  match=function(x){if(!oldMatch(x))return false;const cv=covered();if(cv&&!F.corpus.size&&(F.serie==='alea'||F.serie==='new')&&!cv.includes(x.c))return false;return true};
+  /* ---------- défi erreurs : d'abord les erreurs commises avec assurance (hypercorrection) ---------- */
+  const oldLaunchSel=launchQuizFromCurrentSelection;
+  launchQuizFromCurrentSelection=function(){if(F.serie==='err'){let p=pool().sort((a,b)=>((store.l[b.i]||{}).sureWrong?1:0)-((store.l[a.i]||{}).sureWrong?1:0));if(F.nb>0)p=p.slice(0,F.nb);return launchQuizSet(p,'standard')}return oldLaunchSel()};
+
+  /* ================= TEMPS 1 : comment tu apprends ================= */
+  const Q1={
+    strategies:{multi:true,fr:'Quand tu prépares un contrôle, que fais-tu le plus souvent ?',en:'When you prepare for a test, what do you do most often?',help:{fr:'Plusieurs réponses possibles. Il n’y a pas de bonne réponse.',en:'Several answers possible. There is no right answer.'},
+      opts:[['reread','Je relis mes notes','I reread my notes'],['highlight','Je surligne','I highlight'],['summary','Je fais des fiches','I write summaries'],['selftest','Je me teste (questions, cartes)','I test myself (questions, cards)'],['explain','J’explique à quelqu’un','I explain it to someone'],['practice','Je refais des sujets','I practise past questions']]},
+    timing:{fr:'Tu révises plutôt…',en:'You usually revise…',opts:[['eve','la veille','the night before'],['days','quelques jours avant','a few days before'],['regular','un peu chaque semaine','a little every week']]},
+    minutes:{fr:'Combien de minutes par jour peux-tu donner à HistoryLab ?',en:'How many minutes a day can you give HistoryLab?',opts:[[5,'5 minutes','5 minutes'],[10,'10 minutes','10 minutes'],[20,'20 minutes','20 minutes']]},
+    efficacy:{fr:'De 1 à 5, te sens-tu capable d’écrire une partie (b) de l’Épreuve 2 ?',en:'From 1 to 5, do you feel able to write a Paper 2 part (b)?',opts:[[1,'1 · pas du tout','1 · not at all'],[2,'2','2'],[3,'3','3'],[4,'4','4'],[5,'5 · tout à fait','5 · completely']]},
+    hardest:{fr:'Qu’est-ce qui te paraît le plus difficile ?',en:'What seems hardest to you?',opts:[['remember','Retenir les faits','Remembering the facts'],['plan','Organiser un plan','Organising a plan'],['compare','Comparer deux exemples','Comparing two examples'],['time','Gérer le temps','Managing time'],['question','Comprendre la question','Understanding the question']]},
+    goal:{fr:'Quel objectif te fixes-tu pour l’épreuve blanche de janvier ?',en:'What goal do you set for the January mock?',opts:[[4,'Note IB 4','IB grade 4'],[5,'Note IB 5','IB grade 5'],[6,'Note IB 6','IB grade 6'],[7,'Note IB 7','IB grade 7'],[0,'Je ne sais pas encore','I don’t know yet']]}
+  };
+  let P1={};
+  function progressBlock(prefix){
+    const cv=covered()||[],code=store.progress.code||'';
+    return '<div class="prof-q"><h3>'+L('Où en est ta classe dans le cours ?','Where is your class in the course?')+'</h3><p class="small muted">'+L('Ton professeur t’a donné un code ? Saisis-le. Sinon, coche ce que tu as déjà vu en classe.','Did your teacher give you a code? Enter it. Otherwise, tick what you have already studied in class.')+'</p>'
+      +'<div class="prof-code"><input id="'+prefix+'-code" placeholder="HL-XXXX-X" value="'+esc(code)+'" aria-label="'+L('Code du professeur','Teacher code')+'"><button type="button" class="btn sec sm" id="'+prefix+'-code-ok">'+L('Valider le code','Apply code')+'</button><span class="tiny" id="'+prefix+'-code-msg"></span></div>'
+      +'<div class="prof-corpus">'+[['U1',['D0','A0','A1','A2','A3','A4','A5','B0','B1','B2','B3','B4']],['U2',['C0','C1','C2','C3','C4','C5']]].map(([u,list])=>'<div class="prof-unit"><b>'+(u==='U1'?L('Unité 1.1 · L’émergence','Unit 1.1 · Emergence'):L('Unité 1.2 · Le maintien','Unit 1.2 · Maintenance'))+'</b>'+list.map(c=>'<label class="prof-chk"><input type="checkbox" data-cov="'+c+'"'+(cv.includes(c)?' checked':'')+'> '+esc(corpusLabel(c))+'</label>').join('')+'</div>').join('')+'</div></div>';
+  }
+  function wireProgress(prefix,onChange){
+    const apply=()=>{const v=($('#'+prefix+'-code').value||'').trim().toUpperCase(),msg=$('#'+prefix+'-code-msg');if(!v){store.progress.code='';save();msg.textContent='';onChange&&onChange();return}const d=decodeCode(v);if(!d){msg.textContent=L('Code non reconnu : vérifie les caractères.','Code not recognised: check the characters.');msg.style.color='var(--bs-orange)';return}store.progress.code=v;save();msg.textContent=L('Code accepté : ','Code accepted: ')+d.length+L(' corpus débloqués.',' topics unlocked.');msg.style.color='var(--bs-mid)';$$('[data-cov]').forEach(x=>{if(d.includes(x.dataset.cov))x.checked=true});onChange&&onChange()};
+    const b=$('#'+prefix+'-code-ok');if(b)b.onclick=apply;
+    $$('[data-cov]').forEach(x=>x.onchange=()=>{const fromCode=decodeCode(store.progress.code)||[];store.progress.manual=$$('[data-cov]').filter(y=>y.checked&&!fromCode.includes(y.dataset.cov)).map(y=>y.dataset.cov);if(!x.checked&&fromCode.includes(x.dataset.cov)){x.checked=true}save();onChange&&onChange()});
+  }
+  function drawStep1(){
+    const h0=store.profile&&store.profile.habits||{};P1=JSON.parse(JSON.stringify(h0));if(!Array.isArray(P1.strategies))P1.strategies=[];
+    let h='<div class="prof-steps"><span class="on">1 · '+L('Comment tu apprends','How you learn')+'</span><span>2 · '+L('Où tu en es','Where you are')+'</span><span>3 · '+L('Ton bilan','Your summary')+'</span></div>';
+    h+=coachCard('profile_habits',{},{compact:true});
+    h+=progressBlock('p1');
+    Object.keys(Q1).forEach(k=>{const q=Q1[k];h+='<div class="prof-q" data-q="'+k+'"><h3>'+esc(L(q.fr,q.en))+'</h3>'+(q.help?'<p class="small muted">'+esc(L(q.help.fr,q.help.en))+'</p>':'')+'<div class="pills">'+q.opts.map(o=>'<button type="button" class="pill" data-k="'+k+'" data-v="'+o[0]+'" aria-pressed="'+(q.multi?P1[k].includes(o[0]):P1[k]===o[0])+'">'+esc(L(o[1],o[2]))+'</button>').join('')+'</div></div>'});
+    h+='<div class="go"><button class="btn" id="p1-next">'+L('Passer à mes connaissances →','On to my knowledge →')+'</button><span class="hint" id="p1-hint"></span></div>';
+    $('#profbody').innerHTML=h;wireProgress('p1');
+    $$('#profbody [data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k,q=Q1[k],raw=b.dataset.v,v=isNaN(+raw)?raw:+raw;if(q.multi){const i=P1[k].indexOf(v);i>=0?P1[k].splice(i,1):P1[k].push(v)}else P1[k]=v;$$('#profbody [data-k="'+k+'"]').forEach(x=>{const xv=isNaN(+x.dataset.v)?x.dataset.v:+x.dataset.v;x.setAttribute('aria-pressed',q.multi?P1[k].includes(xv):P1[k]===xv)})});
+    $('#p1-next').onclick=()=>{const cv=covered();if(!cv){$('#p1-hint').textContent=L('Indique d’abord ce que ta classe a déjà étudié.','First say what your class has already studied.');return}if(P1.minutes==null){$('#p1-hint').textContent=L('Dis-moi combien de minutes tu peux y consacrer.','Tell me how many minutes you can give.');return}store.profile=Object.assign(store.profile||{},{habits:P1,habitsDate:Date.now()});save();applyDailyLimit();startStep2()};
+  }
+  function startProfile(){activateView('profile');drawStep1();window.scrollTo(0,0)}
+  startProfileDiagnostic=startProfile;
+
+  /* ================= TEMPS 2 : où tu en es ================= */
+  function pickDiagnostic(){
+    const cv=covered()||[],byC={};DATA.items.filter(x=>cv.includes(x.c)&&!/^CMP-/.test(x.i)).forEach(x=>(byC[x.c]=byC[x.c]||[]).push(x));
+    Object.keys(byC).forEach(c=>byC[c]=shuffle(byC[c]));const keys=shuffle(Object.keys(byC)),out=[];let r=0;
+    while(out.length<12&&r<20){let added=false;keys.forEach(c=>{if(out.length<12&&byC[c][r]){out.push(byC[c][r]);added=true}});if(!added)break;r++}
+    /* chapitre suivant : dans chaque suite (Allemagne, Chine, maintien), le premier corpus non vu après le dernier vu */
+    const SEQS=[['D0'],['A0','A1','A2','A3','A4','A5'],['B0','B1','B2','B3','B4'],['C0','C1','C2','C3','C4','C5']];
+    let next=[];SEQS.forEach(sq=>{const last=Math.max(...sq.map((c,i)=>cv.includes(c)?i:-1));if(last>=0&&last<sq.length-1&&!cv.includes(sq[last+1]))next.push(sq[last+1])});
+    if(!next.length)next=CORPUS_ORDER.filter(c=>!cv.includes(c)).slice(0,1);next=next.slice(0,2);const pre=[];next.forEach(c=>{const arr=shuffle(DATA.items.filter(x=>x.c===c));if(arr[0])pre.push(Object.assign({},arr[0],{_pre:true}))});
+    if(pre.length<3&&next[0]){const extra=shuffle(DATA.items.filter(x=>x.c===next[0])).find(x=>!pre.some(p=>p.i===x.i));if(extra)pre.push(Object.assign({},extra,{_pre:true}))}
+    return shuffle(out).concat(pre.slice(0,3));
+  }
+  function startStep2(){const q=pickDiagnostic();if(!q.length){$('#p1-hint').textContent=L('Aucune question sur les corpus cochés.','No question on the selected topics.');return}launchQuizSet(q,'profile');S.conf={};S.preOk=0;S.preN=q.filter(x=>x._pre).length}
+  const oldAnswer=answer;
+  answer=function(btn,good,it){
+    if(S.kind!=='profile'||S.certGiven===S.i)return oldAnswer(btn,good,it);
+    if(S.awaitCert)return;S.awaitCert=true;$$('#opts .opt').forEach(b=>b.disabled=true);btn.dataset.s='pick';
+    const fb=$('#fb');fb.hidden=false;fb.className='fb cert';
+    fb.innerHTML='<div class="cert-box"><b>'+(it._pre?L('Question découverte : tu verras ce point bientôt en classe. À quel point es-tu sûr ?','Discovery question: you will study this soon in class. How sure are you?'):L('Avant la correction : à quel point es-tu sûr de ta réponse ?','Before the answer: how sure are you?'))+'</b><div class="pills">'+[['sure',L('Sûr','Sure')],['hesit',L('J’hésite','Not sure')],['guess',L('Je devine','Guessing')]].map(c=>'<button type="button" class="pill" data-cert="'+c[0]+'">'+c[1]+'</button>').join('')+'</div></div>';
+    $$('[data-cert]').forEach(b=>b.onclick=()=>{const c=b.dataset.cert;S.conf[it.i]={c,good,pre:!!it._pre,a:it.a,cor:it.c};S.awaitCert=false;S.certGiven=S.i;
+      if(it._pre){S.answered=true;if(good)S.preOk++;$$('#opts .opt').forEach(o=>{const label=o.lastChild.textContent;if(label===it.r)o.dataset.s='ok';else if(o===btn)o.dataset.s='ko'});
+        fb.className='fb '+(good?'ok':'ko');fb.innerHTML='<div class="feedback-grid solo"><div class="feedback-copy"><div class="v">'+(good?L('Bien trouvé !','Well found!'):L('Découverte · ','Discovery · ')+esc(it.r))+'</div><div class="why">'+esc(it.m)+'</div><div class="src">'+L('Question découverte : aucune erreur n’est enregistrée. Ce premier contact t’aidera à retenir ce point en classe.','Discovery question: no mistake is recorded. This first contact will help you remember it in class.')+'</div></div></div>';
+        $('#next').hidden=false;$('#khint').hidden=true;$('#next').focus();return}
+      S.answered=false;oldAnswer(btn,good,it);
+      const st=store.l[it.i];if(st){st.conf=c;if(!good&&c==='sure')st.sureWrong=true;if(good)st.sureWrong=false;save()}
+    });
+  };
+  const oldRender=render;
+  render=function(){oldRender();if(S&&S.kind==='profile'){const it=S.q[S.i];$('#qpos').textContent=L('Étape 2 · question ','Step 2 · question ')+(S.i+1)+L(' sur ',' of ')+S.q.length+(it._pre?L(' · découverte',' · discovery'):'')}};
+
+  /* ================= TEMPS 3 : ton bilan ================= */
+  const oldFinish=finish;
+  finish=function(){if(!S||S.kind!=='profile')return oldFinish();
+    const answered=Object.entries(S.conf||{}),main=answered.filter(([,v])=>!v.pre);
+    if(main.length<Math.min(8,S.q.filter(x=>!x._pre).length)){ $('#quiz').hidden=true;activateView('profile');$('#profbody').innerHTML='<div class="card"><h2>'+L('Diagnostic interrompu','Diagnostic interrupted')+'</h2><p class="small muted">'+L('Réponds à toutes les questions pour obtenir ton bilan.','Answer all the questions to get your summary.')+'</p><div class="go"><button class="btn" id="p-restart">'+L('Recommencer','Start again')+'</button></div></div>';$('#p-restart').onclick=startProfile;return}
+    const ok=main.filter(([,v])=>v.good).length,sureWrong=main.filter(([,v])=>!v.good&&v.c==='sure').length,unsureRight=main.filter(([,v])=>v.good&&v.c!=='sure').length,sure=main.filter(([,v])=>v.c==='sure').length;
+    const byAxis={};main.forEach(([,v])=>{byAxis[v.a]=byAxis[v.a]||{ok:0,n:0};byAxis[v.a].n++;if(v.good)byAxis[v.a].ok++});
+    const axes=Object.keys(byAxis).sort((a,b)=>(byAxis[a].ok/byAxis[a].n)-(byAxis[b].ok/byAxis[b].n)),weak=axes.filter(a=>byAxis[a].ok<byAxis[a].n),strong=axes.filter(a=>byAxis[a].ok===byAxis[a].n);
+    const hab=(store.profile&&store.profile.habits)||{},strat=hab.strategies||[];
+    store.profileBuilt=true;store.profile=Object.assign(store.profile||{},{result:{date:Date.now(),ok,n:main.length,sureWrong,unsureRight,sure,byAxis,preOk:S.preOk,preN:S.preN}});save();applyDailyLimit();
+    $('#quiz').hidden=true;$('#done').hidden=true;activateView('profile');drawSummary();window.scrollTo(0,0);
+  };
+  function drawSummary(){
+    const P=store.profile||{},r=P.result,hab=P.habits||{},strat=hab.strategies||[];if(!r){drawStep1();return}
+    const axes=Object.keys(r.byAxis),weak=axes.filter(a=>r.byAxis[a].ok<r.byAxis[a].n).sort((a,b)=>(r.byAxis[a].ok/r.byAxis[a].n)-(r.byAxis[b].ok/r.byAxis[b].n)),strong=axes.filter(a=>r.byAxis[a].ok===r.byAxis[a].n);
+    const passive=strat.length&&strat.every(s=>['reread','highlight','summary'].includes(s)),hasTest=strat.includes('selftest')||strat.includes('practice');
+    let calib;if(r.sureWrong>=2)calib=L('Tu es parfois sûr de toi alors que tu te trompes ('+r.sureWrong+' fois). Bonne nouvelle : ces erreurs-là se corrigent très bien. Elles passent en tête de ton Défi erreurs.','You are sometimes sure while being wrong ('+r.sureWrong+' times). Good news: these mistakes are very easy to correct. They go first in your error challenge.');
+    else if(r.unsureRight>=3)calib=L('Tu doutes souvent alors que tu as juste ('+r.unsureRight+' fois). Tu en sais plus que tu ne le crois : fais-toi confiance.','You often doubt while you are right ('+r.unsureRight+' times). You know more than you think: trust yourself.');
+    else calib=L('Ta confiance correspond bien à ce que tu sais. C’est une vraie force en examen.','Your confidence matches what you know. That is a real strength in an exam.');
+    const method=passive?L('Tu révises surtout en relisant ou en surlignant. Ce sont les méthodes les plus répandues, et les moins efficaces : se tester fait retenir beaucoup plus. HistoryLab va donc te faire t’interroger, et l’onglet « À savoir par cœur » te propose un auto-test.','You mostly revise by rereading or highlighting. These are the most common methods, and the least effective: testing yourself makes you remember much more. HistoryLab will therefore quiz you, and the “Know by heart” tab offers a self-test.'):hasTest?L('Tu te testes déjà : c’est la méthode la plus efficace. Continue, et espace tes séances : HistoryLab s’occupe du calendrier.','You already test yourself: that is the most effective method. Keep going, and space out your sessions: HistoryLab handles the schedule.'):L('Essaie de te tester plutôt que de relire : c’est ce qui fait retenir le plus.','Try testing yourself rather than rereading: that is what makes you remember most.');
+    const timing=hab.timing==='eve'?L('Tu révises plutôt la veille. Le même temps réparti sur plusieurs jours fait retenir bien plus longtemps : c’est pour cela que les questions reviennent après 1, 3, 7, 14 puis 30 jours.','You tend to revise the night before. The same time spread over several days makes you remember much longer: that is why questions come back after 1, 3, 7, 14 then 30 days.'):'';
+    const lim=DAILY_REVIEW_LIMIT,firstFiche=weak[0]&&AXIS_FICHE[weak[0]],eff=hab.efficacy||0;
+    const plan=[L('Révision du jour : '+lim+' questions maximum, selon le temps que tu m’as donné.','Daily review: '+lim+' questions at most, based on the time you gave me.')];
+    if(firstFiche&&STUDY_FICHES[firstFiche])plan.push(L('Première fiche conseillée : « ','First recommended sheet: “')+esc(STUDY_FICHES[firstFiche].title)+L(' »','”'));
+    if(eff&&eff<=2)plan.push(L('Pour l’épreuve, commence par le mode « Plan express » : dix minutes, sans rédiger. Puis la partie (a), puis la (b).','For the exam, start with “Express plan” mode: ten minutes, no writing. Then part (a), then (b).'));
+    if(hab.hardest==='compare')plan.push(L('Tu trouves difficile de comparer : entraîne-toi avec les questions comparatives Hitler-Mao.','You find comparing hard: practise with the Hitler–Mao comparison questions.'));
+    if(hab.goal)plan.push(L('Objectif de janvier : note IB '+hab.goal+'. On le vérifiera ensemble après l’épreuve blanche.','January goal: IB grade '+hab.goal+'. We will check it together after the mock.'));
+    let h='<div class="prof-steps"><span>1 · '+L('Comment tu apprends','How you learn')+'</span><span>2 · '+L('Où tu en es','Where you are')+'</span><span class="on">3 · '+L('Ton bilan','Your summary')+'</span></div>';
+    h+=coachCard('profile_done',{},{compact:true});
+    h+='<div class="card prof-card"><h2>'+L('Ta carte','Your map')+'</h2><p class="small">'+L(r.ok+' bonnes réponses sur '+r.n+', uniquement sur ce que ta classe a déjà étudié.',r.ok+' correct answers out of '+r.n+', only on what your class has already studied.')+'</p>'
+      +(strong.length?'<p class="small"><b>'+L('Déjà solide : ','Already solid: ')+'</b>'+strong.map(a=>esc(AXES[a])).join(', ')+'</p>':'')+(weak.length?'<p class="small"><b>'+L('À consolider : ','To consolidate: ')+'</b>'+weak.map(a=>esc(AXES[a])).join(', ')+'</p>':'')
+      +(r.preN?'<p class="small muted">'+L('Questions découverte : '+r.preOk+' sur '+r.preN+'. Elles ne comptent pas : elles préparent ton prochain chapitre.','Discovery questions: '+r.preOk+' out of '+r.preN+'. They don’t count: they prepare your next chapter.')+'</p>':'')+'</div>';
+    h+='<div class="card prof-card"><h2>'+L('Ta lucidité','Your self-awareness')+'</h2><p class="small">'+esc(calib)+'</p></div>';
+    h+='<div class="card prof-card"><h2>'+L('Ta méthode','Your method')+'</h2><p class="small">'+esc(method)+'</p>'+(timing?'<p class="small">'+esc(timing)+'</p>':'')+'</div>';
+    h+='<div class="card prof-card"><h2>'+L('Ton plan','Your plan')+'</h2><ul class="small">'+plan.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+    h+='<p class="tiny muted">'+L('Pourquoi ces conseils ? Chaque choix est expliqué, avec ses sources, dans ','Why this advice? Each choice is explained, with its sources, in ')+'<a href="#" id="p-ref">'+L('Références et ressources','References and resources')+'</a>.</p>';
+    h+='<div class="go">'+(firstFiche&&STUDY_FICHES[firstFiche]?'<button class="btn" id="p-fiche">'+L('Ouvrir ma première fiche','Open my first sheet')+'</button>':'')+'<button class="btn sec" id="p-home">'+L('Accueil','Home')+'</button><button class="btn sec" id="p-redo">'+L('Refaire mon profil','Redo my profile')+'</button></div>';
+    $('#profbody').innerHTML=h;
+    if($('#p-fiche'))$('#p-fiche').onclick=()=>{FT='cours';FICHE_OPEN=firstFiche;activateView('fic')};
+    $('#p-home').onclick=()=>activateView('home');$('#p-redo').onclick=startProfile;$('#p-ref').onclick=e=>{e.preventDefault();activateView('ref')};
+  }
+  window.hlDrawSummary=drawSummary;
+
+  /* ---------- messages du coach propres au profil ---------- */
+  Object.assign(COACH_MSG,{
+    profile_habits:{pose:'coffee',fr:['Avant les questions, parlons de toi : comment révises-tu ? Il n’y a pas de mauvaise réponse.','Deux minutes pour que je comprenne ta façon de travailler. Sois honnête : je ne note pas.'],en:['Before the questions, let’s talk about you: how do you revise? There is no wrong answer.','Two minutes so I understand how you work. Be honest: I’m not grading this.']},
+    profile_done:{pose:'progress',fr:['Voilà ton bilan. Il n’est pas figé : on le refera après l’épreuve blanche.','Ton profil est prêt. Ce ne sont pas des étiquettes, juste un point de départ.'],en:['Here is your summary. It is not set in stone: we will redo it after the mock.','Your profile is ready. These aren’t labels, just a starting point.']},
+    tip_retrieval:{pose:'study',fr:['Astuce : ferme ton cahier et essaie de te souvenir. Chercher dans sa mémoire, c’est ce qui la renforce.','Relire donne l’impression de savoir. Se tester montre ce qu’on sait vraiment.'],en:['Tip: close your notebook and try to remember. Searching your memory is what strengthens it.','Rereading feels like knowing. Testing shows what you really know.']}
+  });
+  const oldDrawHome=drawHome;
+  drawHome=function(){oldDrawHome();const P=store.profile,strat=P&&P.habits&&P.habits.strategies||[];
+    if(P&&P.result&&strat.length&&strat.every(s=>['reread','highlight','summary'].includes(s))&&!countDue()&&Math.random()<.5){const m=coachPick('tip_retrieval');const hb=$('#dashboard-bubble'),c=$('#dashboard-coach');if(m&&hb){hb.textContent=m.text;if(c){c.src=coachAsset(m.pose);c.alt=coachAlt(m.pose)}}}
+    if(!store.profileBuilt){const s=$('#dashboard-priority .priority-main span');if(s)s.textContent=L('Huit minutes : tes habitudes, tes acquis sur ce que ta classe a étudié, et ton plan.','Eight minutes: your habits, what you know from what your class has studied, and your plan.')}
+  };
+
+  /* ================= Espace professeur : générer le code d'avancement ================= */
+  function drawTeacher(){
+    const sel=decodeCode(store.progress.code)||[];
+    let h='<div class="card"><h2>'+L('Espace professeur · avancement de la classe','Teacher area · class progress')+'</h2><p class="small muted">'+L('Cochez les corpus déjà traités en classe. HistoryLab produit un code à donner aux élèves (par exemple dans Teams). Ils le saisissent dans Réglages ou au début du profil : leurs révisions au hasard et leur diagnostic ne porteront que sur ces corpus.','Tick the topics already covered in class. HistoryLab produces a code to give to students (for example on Teams). They enter it in Settings or at the start of the profile: their random review and diagnostic will only cover these topics.')+'</p>'
+      +'<div class="prof-corpus">'+[['U1',['D0','A0','A1','A2','A3','A4','A5','B0','B1','B2','B3','B4']],['U2',['C0','C1','C2','C3','C4','C5']]].map(([u,list])=>'<div class="prof-unit"><b>'+(u==='U1'?L('Unité 1.1 · L’émergence','Unit 1.1 · Emergence'):L('Unité 1.2 · Le maintien','Unit 1.2 · Maintenance'))+'</b>'+list.map(c=>'<label class="prof-chk"><input type="checkbox" data-tcov="'+c+'"'+(sel.includes(c)?' checked':'')+'> '+esc(corpusLabel(c))+'</label>').join('')+'</div>').join('')+'</div>'
+      +'<p class="teacher-code">'+L('Code à transmettre : ','Code to share: ')+'<b id="t-code">—</b></p><div class="tools"><button class="btn sec" id="t-copy">'+L('Copier le code','Copy the code')+'</button><button class="btn sec" id="t-apply">'+L('L’appliquer sur cet appareil','Apply it on this device')+'</button></div><p class="tiny muted" id="t-msg" aria-live="polite"></p>'
+      +'<p class="tiny muted">'+L('Ce code ne contient que la liste des corpus : aucune donnée d’élève. Avec la synchronisation Firebase, il sera remplacé par un réglage de classe automatique.','This code only contains the list of topics: no student data. With Firebase sync, it will be replaced by an automatic class setting.')+'</p></div>';
+    $('#refbody').innerHTML=h;
+    const upd=()=>{const list=$$('[data-tcov]').filter(x=>x.checked).map(x=>x.dataset.tcov);$('#t-code').textContent=list.length?encodeCode(list):'—'};$$('[data-tcov]').forEach(x=>x.onchange=upd);upd();
+    $('#t-copy').onclick=()=>copyAny($('#t-code').textContent,$('#t-msg')).then(()=>{$('#t-msg').textContent=L('Code copié.','Code copied.')});
+    $('#t-apply').onclick=()=>{const c=$('#t-code').textContent;if(c==='—')return;store.progress.code=c;save();$('#t-msg').textContent=L('Appliqué sur cet appareil.','Applied on this device.')};
+  }
+
+  /* ================= Références et ressources ================= */
+  const REF_LIB=[
+    {id:'test',t:['Se tester plutôt que relire','Testing rather than rereading'],
+     app:['Tout HistoryLab repose sur des questions : quiz, Flash!, auto-test « À savoir par cœur ».','All of HistoryLab is built on questions: quizzes, Flash!, the “Know by heart” self-test.'],
+     why:['Chercher une réponse dans sa mémoire la renforce davantage que relire la même information. C’est l’« effet de test ». Relire donne une impression de maîtrise, mais retient moins une semaine plus tard.','Retrieving an answer from memory strengthens it more than rereading the same information: the “testing effect”. Rereading feels like mastery, but a week later less is retained.'],
+     refs:[['Roediger, H. L. et Karpicke, J. D. (2006). « Test-enhanced learning ». Psychological Science, 17(3), 249-255.','Expériences contrôlées publiées dans une revue à comité de lecture ; l’une des études les plus citées du domaine.','Controlled experiments in a peer-reviewed journal; one of the most cited studies in the field.'],['Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J. et Willingham, D. T. (2013). « Improving students’ learning with effective learning techniques ». Psychological Science in the Public Interest, 14(1), 4-58.','Synthèse de centaines d’études sur dix techniques ; le test et l’espacement y sont les deux seules jugées « d’utilité élevée ».','Review of hundreds of studies on ten techniques; testing and spacing are the only two rated “high utility”.']],
+     lim:['Les effets sont surtout mesurés sur des faits et des textes ; le lien avec la qualité d’une dissertation est plus indirect.','Effects are mostly measured on facts and texts; the link with essay quality is more indirect.']},
+    {id:'space',t:['Espacer les révisions','Spacing out reviews'],
+     app:['Les questions reviennent après 1, 3, 7, 14 puis 30 jours (boîtes de Leitner) ; une erreur ramène la question au lendemain.','Questions come back after 1, 3, 7, 14 then 30 days (Leitner boxes); a mistake brings the question back the next day.'],
+     why:['Le même temps de travail, réparti sur plusieurs jours, fait retenir bien plus longtemps qu’une séance unique la veille.','The same study time, spread over several days, is remembered far longer than a single session the night before.'],
+     refs:[['Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. et Rohrer, D. (2006). « Distributed practice in verbal recall tasks: A review and quantitative synthesis ». Psychological Bulletin, 132(3), 354-380.','Méta-analyse de plusieurs centaines d’expériences : l’effet d’espacement est l’un des plus solides de la psychologie cognitive.','Meta-analysis of several hundred experiments: the spacing effect is one of the most robust in cognitive psychology.'],['Leitner, S. (1972). So lernt man lernen. Fribourg-en-Brisgau : Herder.','Ouvrage pratique qui a popularisé le système des boîtes ; c’est une méthode, pas une étude scientifique.','Practical book that popularised the box system; a method, not a scientific study.']],
+     lim:['Les intervalles de HistoryLab sont un choix raisonnable, non une valeur optimale démontrée pour chaque élève.','HistoryLab’s intervals are a reasonable choice, not a proven optimum for every student.']},
+    {id:'pretest',t:['Les questions « découverte » avant d’apprendre','“Discovery” questions before learning'],
+     app:['Le diagnostic pose deux ou trois questions sur le chapitre suivant, sans enregistrer d’erreur, avec la correction immédiate.','The diagnostic asks two or three questions on the next chapter, without recording mistakes, with immediate feedback.'],
+     why:['Essayer de répondre avant d’avoir étudié, même en se trompant, aide à mieux apprendre ensuite, à condition de voir la bonne réponse.','Trying to answer before studying, even wrongly, helps you learn better afterwards, provided you see the right answer.'],
+     refs:[['Richland, L. E., Kornell, N. et Kao, L. S. (2009). « The pretesting effect: Do unsuccessful retrieval attempts enhance learning? ». Journal of Experimental Psychology: Applied, 15(3), 243-257.','Série d’expériences contrôlées dans une revue de référence à comité de lecture.','Series of controlled experiments in a leading peer-reviewed journal.']],
+     lim:['L’effet suppose une correction immédiate ; sans elle, on risque de retenir la mauvaise réponse.','The effect requires immediate feedback; without it, the wrong answer may be remembered.']},
+    {id:'confidence',t:['Dire à quel point on est sûr','Saying how sure you are'],
+     app:['Dans le diagnostic, chaque réponse est suivie de « Sûr, J’hésite, Je devine » ; les erreurs commises avec assurance passent en tête du Défi erreurs.','In the diagnostic, each answer is followed by “Sure, Not sure, Guessing”; confident mistakes go first in the error challenge.'],
+     why:['Savoir ce que l’on sait vraiment est une compétence qui s’entraîne. Et une erreur commise avec assurance se corrige mieux qu’une erreur hésitante, une fois la bonne réponse montrée : c’est l’« hypercorrection ».','Knowing what you really know is a skill that can be trained. And a confident mistake is corrected better than a hesitant one once the right answer is shown: “hypercorrection”.'],
+     refs:[['Butterfield, B. et Metcalfe, J. (2001). « Errors committed with high confidence are hypercorrected ». Journal of Experimental Psychology: Learning, Memory, and Cognition, 27(6), 1491-1494.','Expériences contrôlées, résultat reproduit depuis par d’autres équipes.','Controlled experiments; the result has since been replicated by other teams.'],['Education Endowment Foundation (2018, révisé en 2021). Metacognition and Self-Regulated Learning: Guidance Report. Londres : EEF.','Guide d’un organisme indépendant, fondé sur une revue systématique des preuves ; classe la métacognition parmi les leviers les plus rentables.','Guide by an independent body, based on a systematic evidence review; rates metacognition among the most cost-effective levers.']],
+     lim:['Nos trois niveaux de certitude sont une version simplifiée des échelles utilisées en recherche.','Our three confidence levels are a simplified version of the scales used in research.']},
+    {id:'feedback',t:['Un retour sur la tâche, pas sur la personne','Feedback on the task, not the person'],
+     app:['Les bulles du coach parlent de la question, du document, de la méthode (« Relis le document C2.3 ») plutôt que de l’élève (« Tu es nul », « Tu es génial »).','The coach’s bubbles talk about the question, the document, the method (“Reread document C2.3”) rather than the student (“You’re bad”, “You’re brilliant”).'],
+     why:['Un retour utile dit où l’on en est et quoi faire ensuite. Les compliments ou reproches adressés à la personne aident peu, et peuvent même faire baisser la performance.','Useful feedback says where you are and what to do next. Praise or blame aimed at the person helps little, and can even lower performance.'],
+     refs:[['Hattie, J. et Timperley, H. (2007). « The power of feedback ». Review of Educational Research, 77(1), 81-112.','Synthèse de référence, appuyée sur de nombreuses méta-analyses ; distingue quatre niveaux de retour.','Landmark review drawing on many meta-analyses; distinguishes four levels of feedback.'],['Kluger, A. N. et DeNisi, A. (1996). « The effects of feedback interventions on performance ». Psychological Bulletin, 119(2), 254-284.','Méta-analyse : dans environ un tiers des cas, le retour a fait baisser la performance, surtout quand il visait la personne.','Meta-analysis: in about a third of cases, feedback lowered performance, especially when aimed at the person.'],['Mueller, C. M. et Dweck, C. S. (1998). « Praise for intelligence can undermine children’s motivation and performance ». Journal of Personality and Social Psychology, 75(1), 33-52.','Expériences contrôlées sur l’effet des compliments sur l’intelligence ; les grandes interventions « mindset » ont depuis montré des effets modestes (Sisk et al., 2018).','Controlled experiments on praise for intelligence; large “mindset” interventions have since shown modest effects (Sisk et al., 2018).']],
+     lim:['Le ton exact des messages reste un choix du professeur ; la recherche fixe la direction, pas les mots.','The exact tone of the messages remains the teacher’s choice; research sets the direction, not the words.']},
+    {id:'coach',t:['Un coach discret, aux moments clés','A discreet coach, at key moments'],
+     app:['Le coach n’apparaît plus après chaque réponse, seulement lors d’une question maîtrisée, d’une série, d’une première erreur ou d’une erreur répétée.','The coach no longer appears after every answer, only for a mastered question, a streak, a first mistake or a repeated mistake.'],
+     why:['Un personnage attachant peut soutenir la motivation, mais une image décorative à côté d’une explication détourne l’attention de ce qu’il faut apprendre.','A likeable character can support motivation, but a decorative image next to an explanation diverts attention from what must be learned.'],
+     refs:[['Harp, S. F. et Mayer, R. E. (1998). « How seductive details do their damage ». Journal of Educational Psychology, 90(3), 414-434.','Expériences contrôlées sur les « détails séduisants » qui nuisent à la compréhension.','Controlled experiments on “seductive details” that harm understanding.'],['Schroeder, N. L., Adesope, O. O. et Gilbert, R. B. (2013). « How effective are pedagogical agents for learning? A meta-analytic review ». Journal of Educational Computing Research, 49(1), 1-39.','Méta-analyse : les agents pédagogiques ont un effet positif mais modeste.','Meta-analysis: pedagogical agents have a positive but modest effect.']],
+     lim:['L’effet précis de notre coach n’a pas été mesuré ; les retours des élèves le diront.','The precise effect of our coach has not been measured; student feedback will tell.']},
+    {id:'styles',t:['Pas de « styles d’apprentissage »','No “learning styles”'],
+     app:['Le profil ne classe personne en « visuel » ou « auditif » : il demande comment l’élève révise, combien de temps il a, ce qu’il sait déjà.','The profile does not classify anyone as “visual” or “auditory”: it asks how the student revises, how much time they have, what they already know.'],
+     why:['Adapter l’enseignement à un « style » supposé n’améliore pas les résultats. Ce qui compte, ce sont les connaissances déjà acquises et les stratégies utilisées, qui peuvent changer.','Adapting teaching to a supposed “style” does not improve results. What matters is prior knowledge and the strategies used, which can change.'],
+     refs:[['Pashler, H., McDaniel, M., Rohrer, D. et Bjork, R. (2008). « Learning styles: Concepts and evidence ». Psychological Science in the Public Interest, 9(3), 105-119.','Revue critique de référence : aucune preuve solide en faveur de l’adaptation aux styles.','Landmark critical review: no solid evidence for matching teaching to styles.'],['Pintrich, P. R., Smith, D. A. F., Garcia, T. et McKeachie, W. J. (1991). A Manual for the Use of the Motivated Strategies for Learning Questionnaire (MSLQ). Ann Arbor : University of Michigan.','Questionnaire validé sur les stratégies et la motivation, qui a inspiré nos questions.','Validated questionnaire on strategies and motivation, which inspired our questions.']],
+     lim:['Nos sept questions sont inspirées de ces travaux, mais ce n’est pas un instrument validé : c’est un point de départ pour la discussion.','Our seven questions are inspired by this work but are not a validated instrument: they are a starting point for discussion.']},
+    {id:'mcq',t:['Des distracteurs qui sont de vrais faits','Distractors that are real facts'],
+     app:['Les mauvaises réponses sont des faits exacts pris dans l’autre pays ou une autre période ; leurs longueurs sont équilibrées pour que la plus longue ne soit pas toujours la bonne.','Wrong answers are accurate facts from the other country or another period; their lengths are balanced so the longest is not always right.'],
+     why:['Des propositions plausibles obligent à réfléchir et font aussi réviser les autres faits. Des indices involontaires (réponse plus longue, mots « toujours » ou « jamais » dans les pièges) permettent de réussir sans savoir.','Plausible options make students think and also revise the other facts. Accidental clues (a longer answer, “always” or “never” in the traps) let students succeed without knowing.'],
+     refs:[['Haladyna, T. M., Downing, S. M. et Rodriguez, M. C. (2002). « A review of multiple-choice item-writing guidelines for classroom assessment ». Applied Measurement in Education, 15(3), 309-333.','Revue des règles de rédaction des QCM, confrontées à la recherche : options homogènes, pas de mots absolus.','Review of multiple-choice writing rules, checked against research: homogeneous options, no absolute words.'],['Little, J. L., Bjork, E. L., Bjork, R. A. et Angello, G. (2012). « Multiple-choice tests exonerated, at least of some charges ». Psychological Science, 23(11), 1337-1344.','Expériences contrôlées : des distracteurs plausibles favorisent l’apprentissage des informations voisines.','Controlled experiments: plausible distractors foster learning of related information.']],
+     lim:['L’équilibre des longueurs a été contrôlé automatiquement (23,7 % de bonnes réponses les plus longues, pour 25 % attendus au hasard).','Length balance was checked automatically (23.7% of correct answers longest, against 25% expected by chance).']},
+    {id:'compare',t:['Comparer Hitler et Mao','Comparing Hitler and Mao'],
+     app:['Questions comparatives, fiches en deux colonnes, parties (b) qui exigent deux exemples de deux régions.','Comparison questions, two-column sheets, part (b) questions requiring two examples from two regions.'],
+     why:['Mettre deux cas côte à côte aide à dégager ce qui est général et ce qui est propre à chacun. C’est aussi exactement ce que le barème IB récompense.','Putting two cases side by side helps to identify what is general and what is specific. It is also exactly what the IB markscheme rewards.'],
+     refs:[['Alfieri, L., Nokes-Malach, T. J. et Schunn, C. D. (2013). « Learning through case comparisons: A meta-analytic review ». Educational Psychologist, 48(2), 87-113.','Méta-analyse : comparer des cas améliore l’apprentissage des concepts.','Meta-analysis: comparing cases improves concept learning.'],['Organisation du Baccalauréat International. Guide d’Histoire du Programme du diplôme (première évaluation en 2028).','Document officiel du programme : exemples tirés de régions différentes pour chaque sujet.','Official programme document: examples from different regions for each topic.']],
+     lim:['La méta-analyse porte surtout sur les sciences et les mathématiques ; son application à l’histoire est une transposition raisonnable.','The meta-analysis mainly covers science and maths; applying it to history is a reasonable transfer.']},
+    {id:'models',t:['Le corrigé en regard de la copie','The model answer next to the essay'],
+     app:['Après une épreuve, la copie de l’élève s’affiche à gauche et un corrigé rédigé à droite, avec les conseils du professeur.','After an exam, the student’s essay appears on the left and a written model on the right, with the teacher’s advice.'],
+     why:['Étudier un exemple résolu soulage la mémoire de travail et montre la structure attendue ; le comparer à sa propre copie rend les écarts visibles.','Studying a worked example relieves working memory and shows the expected structure; comparing it with one’s own essay makes the gaps visible.'],
+     refs:[['Sweller, J. et Cooper, G. A. (1985). « The use of worked examples as a substitute for problem solving in learning algebra ». Cognition and Instruction, 2(1), 59-89.','Étude fondatrice sur les exemples résolus, à l’origine de la théorie de la charge cognitive.','Founding study on worked examples, at the origin of cognitive load theory.']],
+     lim:['L’effet est surtout établi en mathématiques et en sciences ; pour l’écriture, il s’agit d’une transposition prudente.','The effect is mainly established in maths and science; for writing, it is a careful transfer.']},
+    {id:'efficacy',t:['Des marches à la hauteur de chacun','Steps that match each student'],
+     app:['Un élève qui se sent peu capable d’écrire une partie (b) commence par le plan express, puis la partie (a), avant l’épreuve complète.','A student who feels unable to write a part (b) starts with the express plan, then part (a), before the full exam.'],
+     why:['Le sentiment d’être capable conditionne l’effort et la persévérance. Il se construit surtout par des réussites successives à sa portée.','Feeling capable drives effort and persistence. It is built mainly through successive achievable successes.'],
+     refs:[['Bandura, A. (1997). Self-efficacy: The exercise of control. New York : W. H. Freeman.','Ouvrage de référence de la théorie du sentiment d’efficacité personnelle.','Reference work of self-efficacy theory.']],
+     lim:['Une seule question ne mesure qu’une intuition ; le professeur reste le meilleur juge.','A single question only measures an intuition; the teacher remains the best judge.']},
+    {id:'atl',t:['Le lien avec les Approaches to Learning de l’IB','The link with the IB Approaches to Learning'],
+     app:['Le profil travaille l’autogestion (organisation du temps, régularité) et les compétences de pensée (lucidité sur ses connaissances).','The profile works on self-management (time organisation, regularity) and thinking skills (awareness of one’s own knowledge).'],
+     why:['Ces compétences font partie du cadre officiel du Programme du diplôme ; les rendre visibles aide l’élève à en parler avec son tuteur.','These skills are part of the official Diploma Programme framework; making them visible helps the student discuss them with their tutor.'],
+     refs:[['Organisation du Baccalauréat International. Approaches to Learning (ATL) du Programme du diplôme : cinq catégories de compétences.','Cadre officiel de l’IB.','Official IB framework.']],
+     lim:['HistoryLab ne couvre qu’une partie de ces compétences ; la communication et les compétences sociales restent travaillées en classe.','HistoryLab covers only part of these skills; communication and social skills are worked on in class.']}
+  ];
+  const citeEN=s=>store.lang!=='en'?s:s.replace(/ et /g,' & ').replace(/« /g,'“').replace(/ »/g,'”').replace('révisé en','revised').replace('Fribourg-en-Brisgau','Freiburg').replace('Londres','London').replace('Organisation du Baccalauréat International. Guide d’Histoire du Programme du diplôme (première évaluation en 2028).','International Baccalaureate Organization. Diploma Programme History guide (first assessment 2028).').replace('Organisation du Baccalauréat International. Approaches to Learning (ATL) du Programme du diplôme : cinq catégories de compétences.','International Baccalaureate Organization. Diploma Programme Approaches to Learning (ATL): five skill categories.');
+  function drawRef(){
+    let h='<div class="ref-head"><h1>'+L('Références et ressources','References and resources')+'</h1><p class="small muted">'+L('Pourquoi HistoryLab fonctionne ainsi : chaque choix pédagogique, ce qu’il change dans l’application, et les travaux qui le justifient, avec leur degré de solidité et leurs limites.','Why HistoryLab works this way: each teaching choice, what it changes in the app, and the research behind it, with its strength and limits.')+'</p><div class="tools"><button class="btn sec sm" id="ref-teacher">'+L('Espace professeur','Teacher area')+'</button></div></div>';
+    h+=REF_LIB.map(e=>'<details class="card ref-item"><summary><b>'+esc(L(e.t[0],e.t[1]))+'</b></summary><p class="small"><b>'+L('Dans HistoryLab : ','In HistoryLab: ')+'</b>'+esc(L(e.app[0],e.app[1]))+'</p><p class="small"><b>'+L('Pourquoi : ','Why: ')+'</b>'+esc(L(e.why[0],e.why[1]))+'</p><div class="ref-list">'+e.refs.map(r=>'<div class="ref-src"><div class="ref-cite">'+esc(citeEN(r[0]))+'</div><div class="ref-legit"><span>'+L('Solidité','Strength')+'</span> '+esc(L(r[1],r[2]))+'</div></div>').join('')+'</div><p class="tiny muted"><b>'+L('Limite : ','Limit: ')+'</b>'+esc(L(e.lim[0],e.lim[1]))+'</p></details>').join('');
+    $('#refbody').innerHTML=h;$('#ref-teacher').onclick=drawTeacher;
+  }
+
+  /* ---------- vues et réglages ---------- */
+  const oldActivate=activateView;
+  activateView=function(v){['profile','ref'].forEach(k=>{const q=$('#v-'+k);if(q)q.hidden=(k!==v)});oldActivate(v);if(v==='profile'||v==='ref'){['home','rev','epr','fic','flash','pro'].forEach(k=>{const q=$('#v-'+k);if(q)q.hidden=true});const q=$('#v-'+v);if(q)q.hidden=false;if(v==='ref')drawRef();if(v==='profile'&&!$('#profbody').innerHTML){store.profile&&store.profile.result?drawSummary():drawStep1()}window.scrollTo(0,0)}};
+  document.addEventListener('click',e=>{const t=e.target.closest('#settings-refs,#settings-classprog,#settings-myprofile');if(!t)return;const o=$('#settings-overlay');if(o)o.hidden=true;const w=$('#welcome-screen');if(w&&!w.hidden){w.hidden=true;document.body.classList.remove('welcome-active')}
+    if(t.id==='settings-refs')activateView('ref');
+    else if(t.id==='settings-myprofile'){activateView('profile');store.profile&&store.profile.result?drawSummary():drawStep1()}
+    else{activateView('profile');$('#profbody').innerHTML=progressBlock('pc')+'<div class="go"><button class="btn" id="pc-done">'+L('Enregistrer','Save')+'</button></div>';wireProgress('pc');$('#pc-done').onclick=()=>activateView('home')}});
+})();
+
 </script>
 
 <script>
@@ -2268,7 +2552,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   if(!document.querySelector('#settings-overlay')){
     const o=document.createElement('div');
     o.id='settings-overlay';o.className='settings-overlay';o.hidden=true;
-    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-group"><span class="settings-label" id="settings-progress-label">Ma progression et mes données</span><p class="tiny" id="settings-progress-sub" style="margin:4px 0 10px;color:var(--ink3)">Statistiques par axe, rapport Teams, export et import de la sauvegarde, remise à zéro.</p><button type="button" class="btn sm" id="settings-progress">Ouvrir ma progression</button></div><div class="settings-version">HistoryLab · V7.16</div></section>';
+    o.innerHTML='<section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel-head"><div><small>HistoryLab</small><h2 id="settings-title">Réglages</h2></div><button class="settings-close" id="settings-close" type="button" aria-label="Fermer">×</button></div><div class="settings-group"><span class="settings-label" id="settings-language-label">Langue de l’application</span><div class="settings-lang"><button type="button" data-settings-lang="fr">Français</button><button type="button" data-settings-lang="en">English</button></div></div><div class="settings-group"><span class="settings-label" id="settings-progress-label">Ma progression et mes données</span><p class="tiny" id="settings-progress-sub" style="margin:4px 0 10px;color:var(--ink3)">Statistiques par axe, rapport Teams, export et import de la sauvegarde, remise à zéro.</p><button type="button" class="btn sm" id="settings-progress">Ouvrir ma progression</button></div><div class="settings-group"><span class="settings-label">Profil et classe · Profile and class</span><div class="tools" style="margin-top:8px"><button type="button" class="btn sec sm" id="settings-myprofile">Mon profil · My profile</button><button type="button" class="btn sec sm" id="settings-classprog">Où en est ma classe · Class progress</button><button type="button" class="btn sec sm" id="settings-refs">Références et ressources · References</button></div></div><div class="settings-version">HistoryLab · V7.17</div></section>';
     document.body.appendChild(o);
   }
 
